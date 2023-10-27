@@ -5,6 +5,7 @@ UserModel = get_user_model()
 
 
 def custom_validation(data):
+    print(data)
     email = data["email"].strip()
     username = data["username"].strip()
     password = data["password"].strip()
