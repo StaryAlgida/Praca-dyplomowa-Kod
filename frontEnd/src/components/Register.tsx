@@ -7,7 +7,7 @@ export default function Register() {
   // const [password, setPassword] = useState("");
   // const [password2, setPassword2] = useState("");
 
-  const { registerUser } = useContext(AuthContext);
+  // const { registerUser } = useContext(AuthContext);
 
   return (
     <>
@@ -21,7 +21,7 @@ export default function Register() {
 
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm bg-white">
             <form
-              onSubmit={registerUser}
+              // onSubmit={registerUser}
               className="space-y-6"
               // method="POST"
             >
