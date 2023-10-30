@@ -1,17 +1,23 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
-import Section from "./components/Section";
 import Footer from "./components/Footer";
+import { Outlet } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
-  useEffect(() => {
-    console.log(import.meta.env.VITE_API_URL);
-  }, []);
+  // useEffect(() => {
+  //   console.log(import.meta.env.VITE_API_URL);
+  // }, []);
+
+  // const [currentUser, setCurrentUser] = useState();
+
   return (
     <>
-      <Header />
-      <Section />
-      <Footer />
+      <AuthProvider>
+        <Header />
+        <Outlet />
+        <Footer />
+      </AuthProvider>
     </>
   );
 }

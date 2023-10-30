@@ -1,4 +1,11 @@
+// import { useState } from "react";
+
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
+
 export default function Login() {
+  const { loginUser } = useContext(AuthContext);
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 ">
@@ -10,7 +17,7 @@ export default function Login() {
           </div>
 
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm bg-white">
-            <form className="space-y-6" action="#" method="POST">
+            <form className="space-y-6" onSubmit={loginUser}>
               <div>
                 <label
                   htmlFor="email"
