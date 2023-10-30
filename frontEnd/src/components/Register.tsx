@@ -7,7 +7,7 @@ export default function Register() {
   // const [password, setPassword] = useState("");
   // const [password2, setPassword2] = useState("");
 
-  // const { registerUser } = useContext(AuthContext);
+  const { registerUser } = useContext(AuthContext);
 
   return (
     <>
@@ -21,7 +21,7 @@ export default function Register() {
 
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm bg-white">
             <form
-              // onSubmit={registerUser}
+              onSubmit={registerUser}
               className="space-y-6"
               // method="POST"
             >
@@ -77,7 +77,6 @@ export default function Register() {
                     id="password"
                     name="password"
                     type="password"
-                    autoComplete="current-password"
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -97,7 +96,6 @@ export default function Register() {
                     id="password2"
                     name="password2"
                     type="password"
-                    autoComplete="current-password"
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />

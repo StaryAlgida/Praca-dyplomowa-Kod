@@ -19,19 +19,17 @@ interface AuthContextData {
   // errorLogIn: { [key: string]: string } | null;
   // errorSignUp: { [key: string]: string[] } | null;
   loginUser: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  // signupUser: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  registerUser: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   logoutUser: () => void;
 }
 
 const AuthContext = createContext<AuthContextData>({
   user: null,
   authTokens: null,
-  // errorLogIn: null,
-  // errorSignUp: null,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   loginUser: async (e: React.FormEvent<HTMLFormElement>) => {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // signupUser: async (e: React.FormEvent<HTMLFormElement>) => {},
+  registerUser: async (e: React.FormEvent<HTMLFormElement>) => {},
   logoutUser: () => {},
 });
 
@@ -59,10 +57,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const username = formData.get("username") as string;
+    const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    const response = await client.post("/api/token/", { username, password });
+    const response = await client.post("/api/token/", { email, password });
     const data = await response.data;
     console.log("response: ", response);
 
@@ -83,6 +81,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setAuthTokens(null);
     setUser(null);
     navigate("/login");
+  };
+
+  const registerUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const username = formData.get("username") as string;
+    const password = formData.get("password") as string;
+    const confirm_password = formData.get("password") as string;
+
+    const response = await client.post("/register/", {
+      email,
+      username,
+      password,
+      confirm_password,
+    });
+    if (response.status === 201) {
+      navigate("/login");
+    } else {
+      console.log(response.data);
+    }
   };
 
   const updateToken = async () => {
@@ -119,6 +138,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     authTokens: authTokens,
     loginUser: loginUser,
     logoutUser: logoutUser,
+    registerUser: registerUser,
   };
 
   return (

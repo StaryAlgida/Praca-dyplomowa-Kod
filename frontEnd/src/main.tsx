@@ -8,6 +8,7 @@ import Register from "./components/Register.tsx";
 import Section from "./components/Section.tsx";
 import UserProfile from "./components/UserProfile.tsx";
 import PrivateRoute from "./utils/PrivateRoute.tsx";
+import PrivateRouteLogged from "./utils/PrivateRouterLogged.tsx";
 
 const router = createBrowserRouter([
   {
@@ -15,8 +16,22 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: "/", element: <Section /> },
-      { path: "/login", element: <Login /> },
-      { path: "/register", element: <Register /> },
+      {
+        path: "/login",
+        element: (
+          <PrivateRouteLogged>
+            <Login />
+          </PrivateRouteLogged>
+        ),
+      },
+      {
+        path: "/register",
+        element: (
+          <PrivateRouteLogged>
+            <Register />
+          </PrivateRouteLogged>
+        ),
+      },
       {
         path: "/profile",
         element: (
