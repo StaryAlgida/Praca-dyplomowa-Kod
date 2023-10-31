@@ -1,13 +1,9 @@
 import React, { useContext } from "react";
 import AuthContext from "../context/AuthContext";
+import RegisterError from "./errors/RegisterError";
 
 export default function Register() {
-  // const [email, setEmail] = useState("");
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [password2, setPassword2] = useState("");
-
-  const { registerUser } = useContext(AuthContext);
+  const { registerUser, error } = useContext(AuthContext);
 
   return (
     <>
@@ -18,7 +14,7 @@ export default function Register() {
               Sign in to your account
             </h2>
           </div>
-
+          {error.register ? <RegisterError /> : <></>}
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm bg-white">
             <form
               onSubmit={registerUser}
