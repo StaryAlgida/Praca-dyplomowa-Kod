@@ -48,5 +48,5 @@ class RegisterView(
         request.POST._mutable = True
         request.data["password"] = hash_pasword
 
-        # self.create(request, *args, **kwargs)
+        self.create(request, *args, **kwargs)
         return Response({"created": "Account created successfully"}, status=201)
