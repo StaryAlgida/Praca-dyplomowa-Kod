@@ -91,7 +91,7 @@ export default function Header() {
             </div>
           </div>
 
-          <Disclosure.Panel className="sm:hidden">
+          <Disclosure.Panel className="sm:hidden bg-gray-800 relative">
             <div className="space-y-1 px-2 pb-3 pt-2">
               <Products />
               {navigation.map((item) => (
