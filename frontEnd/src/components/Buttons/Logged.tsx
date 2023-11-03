@@ -48,20 +48,21 @@ export default function Logged() {
             </Menu.Item>
             <Menu.Item>
               {({ active }) => (
-                <a
-                  href="#"
+                <Link
+                  to="/settings/publicinfo"
                   className={classNames(
                     active ? "bg-gray-100" : "",
                     "block px-4 py-2 text-sm text-gray-700"
                   )}
                 >
                   Settings
-                </a>
+                </Link>
               )}
             </Menu.Item>
             <Menu.Item>
               {({ active }) => (
-                <button
+                <a
+                  href=""
                   onClick={logoutUser}
                   className={classNames(
                     active ? "bg-gray-100" : "",
@@ -69,7 +70,7 @@ export default function Logged() {
                   )}
                 >
                   Sign out
-                </button>
+                </a>
               )}
             </Menu.Item>
           </Menu.Items>

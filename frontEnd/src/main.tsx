@@ -9,6 +9,10 @@ import Section from "./components/Section.tsx";
 import UserProfile from "./components/UserProfile.tsx";
 import PrivateRoute from "./utils/PrivateRoute.tsx";
 import PrivateRouteLogged from "./utils/PrivateRouterLogged.tsx";
+import Settings from "./components/Settings.tsx";
+import PrivateInfo from "./components/settings/PrivateInfo.tsx";
+import MainInfo from "./components/settings/MainInfo.tsx";
+import ChangePassword from "./components/settings/ChangePassword.tsx";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +43,19 @@ const router = createBrowserRouter([
             <UserProfile />
           </PrivateRoute>
         ),
+      },
+      {
+        path: "/settings",
+        element: (
+          <PrivateRoute>
+            <Settings />
+          </PrivateRoute>
+        ),
+        children: [
+          { path: "/settings/privateinfo", element: <PrivateInfo /> },
+          { path: "/settings/publicinfo", element: <MainInfo /> },
+          { path: "/settings/changepassword", element: <ChangePassword /> },
+        ],
       },
     ],
   },
