@@ -2,9 +2,10 @@
 
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
+import LoginError from "./errors/LoginError";
 
 export default function Login() {
-  const { loginUser } = useContext(AuthContext);
+  const { loginUser, error } = useContext(AuthContext);
 
   return (
     <>
@@ -15,7 +16,7 @@ export default function Login() {
               Login to your account
             </h2>
           </div>
-
+          {error.login ? <LoginError /> : <></>}
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm bg-white">
             <form className="space-y-6" onSubmit={loginUser}>
               <div>

@@ -11,11 +11,17 @@ const client = axios.create({
   baseURL: "http://127.0.0.1:8000",
 });
 
+interface Error {
+  login: string;
+  register: string;
+}
+
 interface AuthContextData {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   authTokens: any;
+  error: Error;
   // errorLogIn: { [key: string]: string } | null;
   // errorSignUp: { [key: string]: string[] } | null;
   loginUser: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -26,6 +32,7 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({
   user: null,
   authTokens: null,
+  error: { login: "", register: "" },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   loginUser: async (e: React.FormEvent<HTMLFormElement>) => {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -53,26 +60,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       ? JSON.parse(localStorage.getItem("authTokens") as string)
       : null
   );
+  const [error, setError] = useState({ login: "", register: "" });
 
   const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    try {
+      const formData = new FormData(e.currentTarget);
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
 
-    const response = await client.post("/api/token/", { email, password });
-    const data = await response.data;
-    console.log("response: ", response);
+      const response = await client.post("/api/token/", { email, password });
+      const data = await response.data;
+      console.log("response: ", response);
 
-    console.log("data: ", data);
+      console.log("data: ", data);
 
-    if (response.status == 200) {
-      localStorage.setItem("authTokens", JSON.stringify(data));
-      setAuthTokens(data);
-      setUser(jwtDecode(data.access));
-      navigate("/profile");
-    } else {
-      alert("Login Error!");
+      if (response.status == 200) {
+        setError({ login: "", register: "" });
+        localStorage.setItem("authTokens", JSON.stringify(data));
+        setAuthTokens(data);
+        setUser(jwtDecode(data.access));
+        navigate("/profile");
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          setError({ login: "Bad email or passowrd.", register: "" });
+        }
+        if (err.response?.status === 400) {
+          setError({ login: "Email and passowrd are required", register: "" });
+        }
+      }
     }
   };
 
@@ -85,22 +103,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const registerUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const username = formData.get("username") as string;
-    const password = formData.get("password") as string;
-    const confirm_password = formData.get("password") as string;
+    try {
+      const formData = new FormData(e.currentTarget);
+      const email = formData.get("email") as string;
+      const username = formData.get("username") as string;
+      const password = formData.get("password") as string;
+      const confirm_password = formData.get("password2") as string;
 
-    const response = await client.post("/register/", {
-      email,
-      username,
-      password,
-      confirm_password,
-    });
-    if (response.status === 201) {
-      navigate("/login");
-    } else {
-      console.log(response.data);
+      const response = await client.post("/register/", {
+        email,
+        username,
+        password,
+        confirm_password,
+      });
+      if (response.status === 201) {
+        navigate("/login");
+        setError({ login: "", register: "" });
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 400) {
+          setError({ login: "", register: err.response?.data.error });
+        }
+      }
     }
   };
 
@@ -139,6 +164,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loginUser: loginUser,
     logoutUser: logoutUser,
     registerUser: registerUser,
+    error: error,
   };
 
   return (

@@ -13,7 +13,7 @@ from django.contrib.auth.hashers import make_password
 
 from .serializer import UserSerializer
 from .models import User
-from .validations import validate_password
+from .validations import validate_password, is_user_exist
 
 # Create your views here.
 
@@ -31,9 +31,18 @@ class RegisterView(
         password = request.data.get("password")
         confirm_password = request.data.get("confirm_password")
 
-        check = validate_password(password, confirm_password)
-        if check:
-            return Response({"error": check["error"], "id": check["id"]}, status=400)
+        check_password = validate_password(password, confirm_password)
+        check_username = is_user_exist(request.data.get("username"))
+        if check_password:
+            return Response(
+                {"error": check_password["error"], "id": check_password["id"]},
+                status=400,
+            )
+        if check_username:
+            return Response(
+                {"error": check_username["error"], "id": check_username["id"]},
+                status=400,
+            )
 
         hash_pasword = make_password(password)
         request.POST._mutable = True
