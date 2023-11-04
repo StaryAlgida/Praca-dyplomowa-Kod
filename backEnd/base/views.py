@@ -9,9 +9,10 @@ from rest_framework import (
     permissions,
 )
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import make_password
 
-from .serializer import UserSerializer
+from .serializer import UserSerializer, UpdatePublicUserSerializer
 from .models import User
 from .validations import validate_password, is_user_exist
 
@@ -50,3 +51,22 @@ class RegisterView(
 
         self.create(request, *args, **kwargs)
         return Response({"created": "Account created successfully"}, status=201)
+
+
+class UserUpdatePublicView(generics.GenericAPIView, mixins.UpdateModelMixin):
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UpdatePublicUserSerializer
+
+    def put(self, request, *args, **kwargs):
+        user = request.data["username"]
+        instance = self.queryset.get(username=user)
+        serializer = self.serializer_class(
+            instance, data=request.data, context={"request": request}
+        )
+
+        if serializer.is_valid():
+            serializer.update(instance, serializer.validated_data)
+            return Response(status=200)
+
+        return Response(status=400)

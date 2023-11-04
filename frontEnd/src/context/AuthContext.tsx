@@ -49,7 +49,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const storedTokens = localStorage.getItem("authTokens");
     if (storedTokens) {
       const decodedUser = jwtDecode(storedTokens);
-      console.log("decode", decodedUser);
 
       if (decodedUser) {
         return decodedUser;
@@ -57,6 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     return null;
   });
+
   const [authTokens, setAuthTokens] = useState(() =>
     localStorage.getItem("authTokens")
       ? JSON.parse(localStorage.getItem("authTokens") as string)
@@ -73,9 +73,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       const response = await client.post("/api/token/", { email, password });
       const data = await response.data;
-      // console.log("response: ", response);
-
-      // console.log("data: ", data);
 
       if (response.status == 200) {
         setError({ login: "", register: "" });

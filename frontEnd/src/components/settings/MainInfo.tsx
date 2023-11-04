@@ -1,7 +1,12 @@
+import { useContext } from "react";
+import UserProfileContext from "../../context/UserProfileContext";
+
 export default function MainInfo() {
+  const { publickInfoUpdate } = useContext(UserProfileContext);
+
   return (
     <div className="bg-gray-800 text-white p-3 mx-10 mb-10 rounded-lg shadow-2xl">
-      <form action="">
+      <form onSubmit={publickInfoUpdate}>
         <h2 className="font-bold text-xl">Change account details</h2>
         <div className="flex gap-10 flex-wrap justify-center mt-5">
           <div className="bg-sky-900 p-5 rounded ">

@@ -13,6 +13,7 @@ import Settings from "./components/Settings.tsx";
 import PrivateInfo from "./components/settings/PrivateInfo.tsx";
 import MainInfo from "./components/settings/MainInfo.tsx";
 import ChangePassword from "./components/settings/ChangePassword.tsx";
+import { UserProfileProvider } from "./context/UserProfileContext.tsx";
 
 const router = createBrowserRouter([
   {
@@ -40,7 +41,9 @@ const router = createBrowserRouter([
         path: "/profile",
         element: (
           <PrivateRoute>
-            <UserProfile />
+            <UserProfileProvider>
+              <UserProfile />
+            </UserProfileProvider>
           </PrivateRoute>
         ),
       },

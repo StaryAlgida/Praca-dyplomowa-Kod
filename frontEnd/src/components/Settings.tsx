@@ -1,4 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
+import { UserProfileProvider } from "../context/UserProfileContext";
 
 export default function Settings() {
   return (
@@ -14,7 +15,9 @@ export default function Settings() {
           Change password
         </Link>
       </div>
-      <Outlet />
+      <UserProfileProvider>
+        <Outlet />
+      </UserProfileProvider>
     </section>
   );
 }
