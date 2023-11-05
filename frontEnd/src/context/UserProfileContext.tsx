@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode } from "react";
+import React, { createContext, ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -25,17 +25,22 @@ interface UserProfileContextData {
   soldInfo: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   boughtInfo: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  username: any;
   error: Error;
   publickInfoUpdate: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  getPublicInfo: () => void;
 }
 
 const UserProfileContext = createContext<UserProfileContextData>({
   mainUserInfo: null,
   soldInfo: null,
   boughtInfo: null,
+  username: null,
   error: { message: "", response: 0 },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   publickInfoUpdate: async (e: React.FormEvent<HTMLFormElement>) => {},
+  getPublicInfo: () => {},
 });
 
 function getUser() {
@@ -52,9 +57,23 @@ function getUser() {
 
 export default UserProfileContext;
 
+interface LoggedUserInfo {
+  first_name: string;
+  last_name: string;
+  contact_email: string;
+  phone_number: string;
+}
+
 export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const username = getUser();
+  const authTokens = JSON.parse(localStorage.getItem("authTokens") as string);
+  const [mainUserInfo, setMainUserInfo] = useState<LoggedUserInfo>({
+    first_name: "",
+    last_name: "",
+    contact_email: "",
+    phone_number: "",
+  });
 
   const publickInfoUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,10 +93,6 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       ) {
         console.log("you change nothing");
       } else {
-        const authTokens = JSON.parse(
-          localStorage.getItem("authTokens") as string
-        );
-
         const response = await client.put(
           "/profile/updateinfo/",
           {
@@ -106,12 +121,33 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const getPublicInfo = async () => {
+    try {
+      const response = await client.get("profile/info", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+      if (response.status === 200) {
+        console.log("User profile: ", response.data);
+        setMainUserInfo(response.data);
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.log("err");
+      }
+    }
+  };
+
   const contextData = {
-    mainUserInfo: null,
+    mainUserInfo: mainUserInfo,
+    username: username,
     soldInfo: null,
     boughtInfo: null,
     error: { message: "", response: 0 },
     publickInfoUpdate: publickInfoUpdate,
+    getPublicInfo: getPublicInfo,
   };
 
   return (

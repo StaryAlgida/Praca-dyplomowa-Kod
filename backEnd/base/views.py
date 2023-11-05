@@ -68,5 +68,15 @@ class UserUpdatePublicView(generics.GenericAPIView, mixins.UpdateModelMixin):
         if serializer.is_valid():
             serializer.update(instance, serializer.validated_data)
             return Response(status=200)
-
         return Response(status=400)
+
+
+class LoggedUserProfileView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+    # serializer_class = UpdatePublicUserSerializer
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer_class = UpdatePublicUserSerializer(user, many=False)
+        return Response(serializer_class.data, status=200)
