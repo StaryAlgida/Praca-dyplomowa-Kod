@@ -1,7 +1,11 @@
+import { useContext } from "react";
+import UserProfileContext from "../../context/UserProfileContext";
+
 export default function ChangePassword() {
+  const { changePassword } = useContext(UserProfileContext);
   return (
     <div className="bg-gray-800 text-white p-3 mx-10 mb-10 rounded-lg shadow-2xl">
-      <form>
+      <form onSubmit={changePassword}>
         <h2 className="font-bold text-xl">Change account password</h2>
         <div className="flex gap-10 flex-wrap justify-center mt-5">
           <div className="bg-sky-900 p-5 rounded ">
@@ -14,7 +18,7 @@ export default function ChangePassword() {
                 id="old_password"
                 name="old_password"
                 type="password"
-                required
+                // required
                 autoComplete="current-password"
                 className="text-black"
               />
@@ -25,7 +29,7 @@ export default function ChangePassword() {
                 id="new_passowrd"
                 name="new_passowrd"
                 type="password"
-                required
+                // required
                 className="text-black"
               />
             </div>
@@ -34,7 +38,7 @@ export default function ChangePassword() {
               <input
                 id="repeat_passowrd"
                 name="repeat_passowrd"
-                required
+                // required
                 type="password"
                 className="text-black"
               />

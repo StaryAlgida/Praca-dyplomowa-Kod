@@ -6,3 +6,8 @@ urlpatterns = [
     path("profile/updateinfo/", UserUpdatePublicView.as_view(), name="updateprofile"),
     path("profile/info", LoggedUserProfileView.as_view(), name="profile"),
 ]
+
+
+# todo add path:
+# profile/privinfoupdate
+# profile/passwordupdate

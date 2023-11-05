@@ -29,6 +29,8 @@ interface UserProfileContextData {
   username: any;
   error: Error;
   publickInfoUpdate: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  resetPrivateInfo: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  changePassword: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   getPublicInfo: () => void;
 }
 
@@ -40,6 +42,10 @@ const UserProfileContext = createContext<UserProfileContextData>({
   error: { message: "", response: 0 },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   publickInfoUpdate: async (e: React.FormEvent<HTMLFormElement>) => {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  resetPrivateInfo: async (e: React.FormEvent<HTMLFormElement>) => {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  changePassword: async (e: React.FormEvent<HTMLFormElement>) => {},
   getPublicInfo: () => {},
 });
 
@@ -140,6 +146,64 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const resetPrivateInfo = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData(e.currentTarget);
+      const login_email = formData.get("login_email") as string;
+      const username = formData.get("username") as string;
+      const password = formData.get("password") as string;
+
+      const response = await client.post(
+        "profile/privinfoupdate",
+        { login_email, username, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        navigate("/profile");
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.log("ok");
+      }
+    }
+  };
+
+  const changePassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData(e.currentTarget);
+      const old_password = formData.get("old_password") as string;
+      const new_passowrd = formData.get("new_passowrd") as string;
+      const repeat_passowrd = formData.get("repeat_passowrd") as string;
+      console.log(old_password, new_passowrd, repeat_passowrd);
+
+      const response = await client.post(
+        "profile/passwordupdate",
+        { old_password, new_passowrd, repeat_passowrd },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        console.log("ok");
+        navigate("/profile");
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.log(err);
+      }
+    }
+  };
+
   const contextData = {
     mainUserInfo: mainUserInfo,
     username: username,
@@ -148,6 +212,8 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     error: { message: "", response: 0 },
     publickInfoUpdate: publickInfoUpdate,
     getPublicInfo: getPublicInfo,
+    resetPrivateInfo: resetPrivateInfo,
+    changePassword: changePassword,
   };
 
   return (
