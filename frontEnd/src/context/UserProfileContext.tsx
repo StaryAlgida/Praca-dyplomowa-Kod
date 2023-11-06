@@ -150,13 +150,13 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     e.preventDefault();
     try {
       const formData = new FormData(e.currentTarget);
-      const login_email = formData.get("login_email") as string;
+      const email = formData.get("login_email") as string;
       const username = formData.get("username") as string;
       const password = formData.get("password") as string;
 
-      const response = await client.post(
+      const response = await client.put(
         "profile/privinfoupdate",
-        { login_email, username, password },
+        { email, username, password },
         {
           headers: {
             "Content-Type": "application/json",
@@ -179,13 +179,12 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     try {
       const formData = new FormData(e.currentTarget);
       const old_password = formData.get("old_password") as string;
-      const new_passowrd = formData.get("new_passowrd") as string;
-      const repeat_passowrd = formData.get("repeat_passowrd") as string;
-      console.log(old_password, new_passowrd, repeat_passowrd);
+      const password = formData.get("new_passowrd") as string;
+      const confirm_password = formData.get("repeat_passowrd") as string; //poprawić password
 
-      const response = await client.post(
+      const response = await client.put(
         "profile/passwordupdate",
-        { old_password, new_passowrd, repeat_passowrd },
+        { old_password, password, confirm_password },
         {
           headers: {
             "Content-Type": "application/json",

@@ -12,7 +12,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import make_password
 
-from .serializer import UserSerializer, UpdatePublicUserSerializer
+from .serializer import (
+    ChangePasswordSerializer,
+    UpdatePrivateInfo,
+    UserSerializer,
+    UpdatePublicUserSerializer,
+)
 from .models import User
 from .validations import validate_password, is_user_exist
 
@@ -71,10 +76,69 @@ class UserUpdatePublicView(generics.GenericAPIView, mixins.UpdateModelMixin):
         return Response(status=400)
 
 
+class UserUpdatePrivateDataView(
+    generics.GenericAPIView,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+):
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UpdatePrivateInfo
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        instance = self.queryset.get(id=user.id)
+        serializer = self.serializer_class(
+            instance, data=request.data, context={"request": request}
+        )
+        if serializer.validate_current_password(request.data.get("password")):
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=200)
+        return Response(status=400)
+
+
+class ChangePasswordView(
+    generics.GenericAPIView,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+):
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = ChangePasswordSerializer
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        instance = self.queryset.get(id=user.id)
+        serializer = self.serializer_class(
+            instance, data=request.data, context={"request": request}
+        )
+
+        password = request.data.get("password")
+        confirm_password = request.data.get("confirm_password")
+
+        print(request.data)
+
+        if serializer.validate_current_password(request.data.get("old_password")):
+            check_password = validate_password(password, confirm_password)
+            print(check_password)
+            if not check_password:
+                print("serializer valid")
+                hash_pasword = make_password(request.data.get("password"))
+                request.POST._mutable = True
+                request.data["password"] = hash_pasword
+                request.data.pop("confirm_password")
+                request.data.pop("old_password")
+                if serializer.is_valid():
+                    serializer.save()
+
+                    return Response(status=200)
+        return Response(status=400)
+
+
 class LoggedUserProfileView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
-    # serializer_class = UpdatePublicUserSerializer
 
     def get(self, request, *args, **kwargs):
         user = request.user

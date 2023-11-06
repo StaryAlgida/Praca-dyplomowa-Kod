@@ -29,3 +29,36 @@ class UpdatePublicUserSerializer(serializers.ModelSerializer):
                 setattr(instance, field, value)
         instance.save()
         return instance
+
+
+class UpdatePrivateInfo(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["email", "username"]
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
+
+    def validate_current_password(self, value):
+        user = self.context["request"].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Current password is incorrect.")
+        return value
+
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["password"]
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
+
+    def validate_current_password(self, value):
+        user = self.context["request"].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Current password is incorrect.")
+        return value
