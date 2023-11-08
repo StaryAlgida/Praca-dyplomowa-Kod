@@ -19,7 +19,7 @@ from .serializer import (
     UpdatePublicUserSerializer,
 )
 from .models import User
-from .validations import validate_password, is_user_exist
+from .validations import is_email_in_use, is_not_empty, validate_password, is_user_exist
 
 # Create your views here.
 
@@ -37,18 +37,21 @@ class RegisterView(
         password = request.data.get("password")
         confirm_password = request.data.get("confirm_password")
 
-        check_password = validate_password(password, confirm_password)
+        check_is_empty = is_not_empty(request.data)
+        if check_is_empty:
+            return Response(check_is_empty, status=400)
+
+        check_email = is_email_in_use(request.data.get("email"))
+        if check_email:
+            return Response(check_email, status=400)
+
         check_username = is_user_exist(request.data.get("username"))
-        if check_password:
-            return Response(
-                {"error": check_password["error"], "id": check_password["id"]},
-                status=400,
-            )
         if check_username:
-            return Response(
-                {"error": check_username["error"], "id": check_username["id"]},
-                status=400,
-            )
+            return Response(check_username, status=400)
+
+        check_password = validate_password(password, confirm_password)
+        if check_password:
+            return Response(check_password, status=400)
 
         hash_pasword = make_password(password)
         request.POST._mutable = True
@@ -94,8 +97,8 @@ class UserUpdatePrivateDataView(
         if serializer.validate_current_password(request.data.get("password")):
             if serializer.is_valid():
                 serializer.save()
-                return Response(status=200)
-        return Response(status=400)
+                return Response({"response": "Data updated."}, status=200)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ChangePasswordView(
@@ -117,23 +120,24 @@ class ChangePasswordView(
         password = request.data.get("password")
         confirm_password = request.data.get("confirm_password")
 
-        print(request.data)
+        check_password = validate_password(password, confirm_password)
+        if check_password:
+            return Response(
+                {"error": check_password["error"], "id": check_password["id"]},
+                status=400,
+            )
 
         if serializer.validate_current_password(request.data.get("old_password")):
-            check_password = validate_password(password, confirm_password)
-            print(check_password)
-            if not check_password:
-                print("serializer valid")
-                hash_pasword = make_password(request.data.get("password"))
-                request.POST._mutable = True
-                request.data["password"] = hash_pasword
-                request.data.pop("confirm_password")
-                request.data.pop("old_password")
-                if serializer.is_valid():
-                    serializer.save()
+            hash_pasword = make_password(request.data.get("password"))
+            request.POST._mutable = True
+            request.data["password"] = hash_pasword
+            request.data.pop("confirm_password")
+            request.data.pop("old_password")
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"response": "Password updated."}, status=200)
 
-                    return Response(status=200)
-        return Response(status=400)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoggedUserProfileView(generics.GenericAPIView):

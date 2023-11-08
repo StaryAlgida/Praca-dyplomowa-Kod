@@ -8,9 +8,9 @@ const client = axios.create({
   baseURL: "http://127.0.0.1:8000",
 });
 
-interface Error {
-  message: string;
-  response: number;
+interface Errors {
+  error: string;
+  id: number;
 }
 
 interface JwtPayload {
@@ -27,7 +27,7 @@ interface UserProfileContextData {
   boughtInfo: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   username: any;
-  error: Error;
+  error: Errors;
   publickInfoUpdate: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   resetPrivateInfo: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   changePassword: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -39,7 +39,7 @@ const UserProfileContext = createContext<UserProfileContextData>({
   soldInfo: null,
   boughtInfo: null,
   username: null,
-  error: { message: "", response: 0 },
+  error: { error: "", id: 0 },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   publickInfoUpdate: async (e: React.FormEvent<HTMLFormElement>) => {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -80,6 +80,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     contact_email: "",
     phone_number: "",
   });
+  const [error, setError] = useState<Errors>({ error: "", id: 0 });
 
   const publickInfoUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -169,7 +170,9 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        console.log("ok");
+        if (err.response?.status === 400) {
+          setError({ error: err.response.data, id: 0 });
+        }
       }
     }
   };
@@ -198,7 +201,18 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        console.log(err);
+        if (err.response?.status === 400) {
+          if (err.response.data.error) {
+            setError({
+              error: err.response.data.error,
+              id: err.response.data.id,
+            });
+          } else {
+            setError({ error: err.response.data, id: 0 });
+          }
+
+          console.log(error);
+        }
       }
     }
   };
@@ -208,7 +222,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     username: username,
     soldInfo: null,
     boughtInfo: null,
-    error: { message: "", response: 0 },
+    error: error,
     publickInfoUpdate: publickInfoUpdate,
     getPublicInfo: getPublicInfo,
     resetPrivateInfo: resetPrivateInfo,

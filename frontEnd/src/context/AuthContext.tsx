@@ -14,6 +14,7 @@ const client = axios.create({
 interface Error {
   login: string;
   register: string;
+  regId: number[];
 }
 
 interface AuthContextData {
@@ -32,7 +33,7 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({
   user: null,
   authTokens: null,
-  error: { login: "", register: "" },
+  error: { login: "", register: "", regId: [] },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   loginUser: async (e: React.FormEvent<HTMLFormElement>) => {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -62,7 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       ? JSON.parse(localStorage.getItem("authTokens") as string)
       : null
   );
-  const [error, setError] = useState({ login: "", register: "" });
+  const [error, setError] = useState({ login: "", register: "", regId: [] });
 
   const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -75,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const data = await response.data;
 
       if (response.status == 200) {
-        setError({ login: "", register: "" });
+        setError({ login: "", register: "", regId: [] });
         localStorage.setItem("authTokens", JSON.stringify(data));
         setAuthTokens(data);
         setUser(jwtDecode(data.access));
@@ -84,10 +85,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 401) {
-          setError({ login: "Bad email or passowrd.", register: "" });
+          setError({
+            login: "Bad email or passowrd.",
+            register: "",
+            regId: [],
+          });
         }
         if (err.response?.status === 400) {
-          setError({ login: "Email and passowrd are required", register: "" });
+          setError({
+            login: "Email and passowrd are required",
+            register: "",
+            regId: [],
+          });
         }
       }
     }
@@ -117,12 +126,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       if (response.status === 201) {
         navigate("/login");
-        setError({ login: "", register: "" });
+        setError({ login: "", register: "", regId: [] });
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 400) {
-          setError({ login: "", register: err.response?.data.error });
+          console.log(err.response?.data.id);
+
+          setError({
+            login: "",
+            register: err.response?.data.error,
+            regId: err.response?.data.id,
+          });
         }
       }
     }
@@ -170,3 +185,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
   );
 };
+
+// function getKeys(Obj: AxiosError): number[] {
+//   const response = Obj.response?.data;
+//   const id: number[] = [];
+//   let keys: string[];
+//   if (response) {
+//     keys = Object.keys(response);
+//     keys.forEach((key) => {
+//       switch (key) {
+//         case "email":
+//           id.push(0);
+//           break;
+//         case "username":
+//           id.push(1);
+//           break;
+//         default:
+//           break;
+//       }
+//     });
+//   }
+//   return id;
+// }

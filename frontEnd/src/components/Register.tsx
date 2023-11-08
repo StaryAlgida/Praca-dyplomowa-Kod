@@ -4,7 +4,10 @@ import RegisterError from "./errors/RegisterError";
 
 export default function Register() {
   const { registerUser, error } = useContext(AuthContext);
-
+  const okClass =
+    "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6";
+  const errorClass =
+    "border-2 border-rose-500 block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6";
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 ">
@@ -14,19 +17,20 @@ export default function Register() {
               Sign in to your account
             </h2>
           </div>
-          {error.register ? <RegisterError /> : <></>}
+
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm bg-white">
             <form
               onSubmit={registerUser}
               className="space-y-6"
               // method="POST"
             >
+              {error.register ? <RegisterError /> : <></>}
               <div>
                 <label
                   htmlFor="email"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
-                  Email address
+                  Email address *
                 </label>
                 <div className="mt-2">
                   <input
@@ -35,7 +39,11 @@ export default function Register() {
                     type="email"
                     autoComplete="email"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className={
+                      error.regId.includes(0) || error.regId[0] === -3
+                        ? errorClass
+                        : okClass
+                    }
                   />
                 </div>
               </div>
@@ -45,7 +53,7 @@ export default function Register() {
                   htmlFor="username"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
-                  User name
+                  User name *
                 </label>
                 <div className="mt-2">
                   <input
@@ -54,7 +62,11 @@ export default function Register() {
                     type="text"
                     autoComplete="username"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className={
+                      error.regId.includes(1) || error.regId[0] === -2
+                        ? errorClass
+                        : okClass
+                    }
                   />
                 </div>
               </div>
@@ -65,7 +77,7 @@ export default function Register() {
                     htmlFor="password"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
-                    Password
+                    Password *
                   </label>
                 </div>
                 <div className="mt-2">
@@ -74,7 +86,11 @@ export default function Register() {
                     name="password"
                     type="password"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className={
+                      error.regId.includes(2) || error.regId[0] === -1
+                        ? errorClass
+                        : okClass
+                    }
                   />
                 </div>
               </div>
@@ -84,7 +100,7 @@ export default function Register() {
                     htmlFor="password2"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
-                    Repeat Password
+                    Repeat Password *
                   </label>
                 </div>
                 <div className="mt-2">
@@ -93,7 +109,11 @@ export default function Register() {
                     name="password2"
                     type="password"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className={
+                      error.regId.includes(3) || error.regId[0] === -1
+                        ? errorClass
+                        : okClass
+                    }
                   />
                 </div>
               </div>

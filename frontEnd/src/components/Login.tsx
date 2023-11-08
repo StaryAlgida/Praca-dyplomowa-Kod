@@ -6,7 +6,10 @@ import LoginError from "./errors/LoginError";
 
 export default function Login() {
   const { loginUser, error } = useContext(AuthContext);
-
+  const okClass =
+    "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6";
+  const errorClass =
+    "border-2 border-rose-500 block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6";
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8 ">
@@ -16,10 +19,10 @@ export default function Login() {
               Login to your account
             </h2>
           </div>
-          {error.login ? <LoginError /> : <></>}
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm bg-white">
             <form className="space-y-6" onSubmit={loginUser}>
               <div>
+                {error.login ? <LoginError /> : <></>}
                 <label
                   htmlFor="email"
                   className="block text-sm font-medium leading-6 text-gray-900"
@@ -33,7 +36,7 @@ export default function Login() {
                     type="email"
                     autoComplete="email"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className={error.login ? errorClass : okClass}
                   />
                 </div>
               </div>
@@ -62,7 +65,7 @@ export default function Login() {
                     type="password"
                     autoComplete="current-password"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className={error.login ? errorClass : okClass}
                   />
                 </div>
               </div>
