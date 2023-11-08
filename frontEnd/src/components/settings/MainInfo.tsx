@@ -1,8 +1,29 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserProfileContext from "../../context/UserProfileContext";
 
 export default function MainInfo() {
-  const { publickInfoUpdate } = useContext(UserProfileContext);
+  const { resetError, publickInfoUpdate, getPublicInfoForm, mainUserInfo } =
+    useContext(UserProfileContext);
+
+  const [email, setEmail] = useState<string | null>(null);
+  const [phone, setPhone] = useState<string | null>(null);
+  const [company, setCompany] = useState<string | null>(null);
+  const [first, setFirst] = useState<string | null>(null);
+  const [last, setLast] = useState<string | null>(null);
+
+  useEffect(() => {
+    getPublicInfoForm();
+    resetError();
+  }, []);
+
+  useEffect(() => {
+    setEmail(mainUserInfo.contact_email);
+    setPhone(mainUserInfo.phone_number);
+    setCompany(mainUserInfo.company_name);
+    setFirst(mainUserInfo.first_name);
+    setLast(mainUserInfo.last_name);
+    console.log(mainUserInfo);
+  }, [mainUserInfo]);
 
   return (
     <div className="bg-gray-800 text-white p-3 mx-10 mb-10 rounded-lg shadow-2xl">
@@ -19,6 +40,10 @@ export default function MainInfo() {
                 id="contact_email"
                 name="contact_email"
                 type="email"
+                value={email ? email : ""}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
                 autoComplete="email"
                 className="text-black"
               />
@@ -30,6 +55,10 @@ export default function MainInfo() {
                 name="phone_number"
                 type="phone"
                 className="text-black"
+                value={phone ? phone : ""}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                }}
               />
             </div>
           </div>
@@ -44,6 +73,10 @@ export default function MainInfo() {
                 name="company_name"
                 type="text"
                 className="text-black"
+                value={company ? company : ""}
+                onChange={(e) => {
+                  setCompany(e.target.value);
+                }}
               />
             </div>
             <label htmlFor="first_name">First name</label>
@@ -53,6 +86,10 @@ export default function MainInfo() {
                 name="first_name"
                 type="text"
                 className="text-black"
+                value={first ? first : ""}
+                onChange={(e) => {
+                  setFirst(e.target.value);
+                }}
               />
             </div>
             <label htmlFor="last_name">Last name</label>
@@ -62,6 +99,10 @@ export default function MainInfo() {
                 name="last_name"
                 type="text"
                 className="text-black"
+                value={last ? last : ""}
+                onChange={(e) => {
+                  setLast(e.target.value);
+                }}
               />
             </div>
           </div>

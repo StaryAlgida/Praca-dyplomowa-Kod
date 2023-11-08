@@ -2,14 +2,20 @@ import { useContext, useEffect, useState } from "react";
 import UserProfileContext from "../../context/UserProfileContext";
 
 export default function PrivateInfo() {
-  const { getPrivateInfo, resetPrivateInfo, error, userPrivateIfno } =
-    useContext(UserProfileContext);
+  const {
+    resetError,
+    getPrivateInfo,
+    resetPrivateInfo,
+    error,
+    userPrivateIfno,
+  } = useContext(UserProfileContext);
 
   const [email, setEmail] = useState<string | null>(null);
   const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
     getPrivateInfo();
+    resetError();
   }, []);
 
   useEffect(() => {
@@ -37,6 +43,7 @@ export default function PrivateInfo() {
                 name="login_email"
                 type="email"
                 autoComplete="email"
+                required
                 className={
                   error.id.includes(0) || error.id.includes(-1)
                     ? errorClass
@@ -52,6 +59,7 @@ export default function PrivateInfo() {
                 id="username"
                 name="username"
                 type="text"
+                required
                 className={
                   error.id.includes(1) || error.id.includes(-1)
                     ? errorClass
@@ -69,7 +77,7 @@ export default function PrivateInfo() {
               <input
                 id="password"
                 name="password"
-                // required
+                required
                 autoComplete="current-passowrd"
                 type="password"
                 className={

@@ -18,9 +18,21 @@ interface JwtPayload {
   username: string;
 }
 
+interface LoggedUserInfo {
+  company_name: string;
+  first_name: string;
+  last_name: string;
+  contact_email: string;
+  phone_number: string;
+}
+
+interface PrivateInfo {
+  email: string;
+  username: string;
+}
+
 interface UserProfileContextData {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mainUserInfo: any; //
+  mainUserInfo: LoggedUserInfo;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   soldInfo: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,20 +42,29 @@ interface UserProfileContextData {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   userPrivateIfno: any;
   error: Errors;
+  getPublicInfoForm: () => void;
   publickInfoUpdate: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   getPrivateInfo: () => void;
   resetPrivateInfo: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   changePassword: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   getPublicInfo: () => void;
+  resetError: () => void;
 }
 
 const UserProfileContext = createContext<UserProfileContextData>({
-  mainUserInfo: null,
+  mainUserInfo: {
+    company_name: "",
+    first_name: "",
+    last_name: "",
+    contact_email: "",
+    phone_number: "",
+  },
   soldInfo: null,
   boughtInfo: null,
   username: null,
   userPrivateIfno: null,
   error: { error: "", id: [] },
+  getPublicInfoForm: () => {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   publickInfoUpdate: async (e: React.FormEvent<HTMLFormElement>) => {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -52,6 +73,7 @@ const UserProfileContext = createContext<UserProfileContextData>({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   changePassword: async (e: React.FormEvent<HTMLFormElement>) => {},
   getPublicInfo: () => {},
+  resetError: () => {},
 });
 
 function getUser() {
@@ -68,24 +90,13 @@ function getUser() {
 
 export default UserProfileContext;
 
-interface LoggedUserInfo {
-  first_name: string;
-  last_name: string;
-  contact_email: string;
-  phone_number: string;
-}
-
-interface PrivateInfo {
-  email: string;
-  username: string;
-}
-
 // start
 export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const username = getUser();
   const authTokens = JSON.parse(localStorage.getItem("authTokens") as string);
   const [mainUserInfo, setMainUserInfo] = useState<LoggedUserInfo>({
+    company_name: "",
     first_name: "",
     last_name: "",
     contact_email: "",
@@ -162,6 +173,24 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const getPublicInfoForm = async () => {
+    try {
+      const response = await client.get("/profile/updateinfo/", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+      if (response.status === 200) {
+        setMainUserInfo({ ...response.data });
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.log(err);
+      }
+    }
+  };
+
   const getPrivateInfo = async () => {
     try {
       const response = await client.get("profile/privinfoupdate", {
@@ -171,7 +200,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
         },
       });
       if (response.status === 200) {
-        setUserPrivateIfno(response.data);
+        setUserPrivateIfno({ ...response.data });
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -252,6 +281,10 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const resetError = () => {
+    setError({ error: "", id: [] });
+  };
+
   const contextData = {
     mainUserInfo: mainUserInfo,
     username: username,
@@ -259,11 +292,13 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     soldInfo: null,
     boughtInfo: null,
     error: error,
-    publickInfoUpdate: publickInfoUpdate,
-    getPublicInfo: getPublicInfo,
-    getPrivateInfo: getPrivateInfo,
-    resetPrivateInfo: resetPrivateInfo,
-    changePassword: changePassword,
+    publickInfoUpdate,
+    getPublicInfo,
+    getPublicInfoForm,
+    getPrivateInfo,
+    resetPrivateInfo,
+    changePassword,
+    resetError,
   };
 
   return (

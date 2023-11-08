@@ -66,6 +66,11 @@ class UserUpdatePublicView(generics.GenericAPIView, mixins.UpdateModelMixin):
     queryset = User.objects.all()
     serializer_class = UpdatePublicUserSerializer
 
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer_class = UpdatePublicUserSerializer(user, many=False)
+        return Response(serializer_class.data, status=200)
+
     def put(self, request, *args, **kwargs):
         user = request.data["username"]
         instance = self.queryset.get(username=user)

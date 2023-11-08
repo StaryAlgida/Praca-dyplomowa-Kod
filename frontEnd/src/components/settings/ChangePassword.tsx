@@ -1,9 +1,12 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import UserProfileContext from "../../context/UserProfileContext";
 
 export default function ChangePassword() {
-  const { changePassword, error } = useContext(UserProfileContext);
-  console.log(error);
+  const { resetError, changePassword, error } = useContext(UserProfileContext);
+
+  useEffect(() => {
+    resetError();
+  }, []);
 
   const okClass = "text-black";
   const errorClass = "text-black border-2 border-rose-500";
@@ -23,7 +26,7 @@ export default function ChangePassword() {
                 id="old_password"
                 name="old_password"
                 type="password"
-                // required
+                required
                 autoComplete="current-password"
                 className={
                   error.id.includes(0) || error.id.includes(-2)
@@ -38,7 +41,7 @@ export default function ChangePassword() {
                 id="new_passowrd"
                 name="new_passowrd"
                 type="password"
-                // required
+                required
                 className={
                   error.id.includes(1) || error.id.includes(-1)
                     ? errorClass
@@ -51,7 +54,7 @@ export default function ChangePassword() {
               <input
                 id="repeat_passowrd"
                 name="repeat_passowrd"
-                // required
+                required
                 type="password"
                 className={
                   error.id.includes(2) || error.id.includes(-1)
