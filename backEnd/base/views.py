@@ -88,12 +88,22 @@ class UserUpdatePrivateDataView(
     queryset = User.objects.all()
     serializer_class = UpdatePrivateInfo
 
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer_class = UpdatePrivateInfo(user, many=False)
+        return Response(serializer_class.data, status=200)
+
     def put(self, request, *args, **kwargs):
         user = request.user
         instance = self.queryset.get(id=user.id)
         serializer = self.serializer_class(
             instance, data=request.data, context={"request": request}
         )
+
+        check_is_empty = is_not_empty(request.data)
+        if check_is_empty:
+            return Response(check_is_empty, status=400)
+
         if serializer.validate_current_password(request.data.get("password")):
             if serializer.is_valid():
                 serializer.save()

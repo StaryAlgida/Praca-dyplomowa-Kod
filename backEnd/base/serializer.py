@@ -42,7 +42,9 @@ class UpdatePrivateInfo(serializers.ModelSerializer):
     def validate_current_password(self, value):
         user = self.context["request"].user
         if not user.check_password(value):
-            raise serializers.ValidationError("Current password is incorrect.")
+            raise serializers.ValidationError(
+                {"error": "Incorect password.", "id": [-2]}
+            )
         return value
 
 
