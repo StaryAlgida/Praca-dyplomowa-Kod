@@ -10,7 +10,7 @@ const client = axios.create({
 
 interface Errors {
   error: string;
-  id: number;
+  id: number[];
 }
 
 interface JwtPayload {
@@ -39,7 +39,7 @@ const UserProfileContext = createContext<UserProfileContextData>({
   soldInfo: null,
   boughtInfo: null,
   username: null,
-  error: { error: "", id: 0 },
+  error: { error: "", id: [] },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   publickInfoUpdate: async (e: React.FormEvent<HTMLFormElement>) => {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -80,7 +80,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     contact_email: "",
     phone_number: "",
   });
-  const [error, setError] = useState<Errors>({ error: "", id: 0 });
+  const [error, setError] = useState<Errors>({ error: "", id: [] });
 
   const publickInfoUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -171,7 +171,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 400) {
-          setError({ error: err.response.data, id: 0 });
+          setError({ error: err.response.data, id: [] });
         }
       }
     }
@@ -196,22 +196,17 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
         }
       );
       if (response.status === 200) {
-        console.log("ok");
         navigate("/profile");
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        if (err.response?.status === 400) {
-          if (err.response.data.error) {
-            setError({
-              error: err.response.data.error,
-              id: err.response.data.id,
-            });
-          } else {
-            setError({ error: err.response.data, id: 0 });
-          }
+        console.log(err);
 
-          console.log(error);
+        if (err.response?.status === 400) {
+          setError({
+            error: err.response.data.error,
+            id: err.response.data.id.map(Number),
+          });
         }
       }
     }

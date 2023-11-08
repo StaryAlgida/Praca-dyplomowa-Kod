@@ -3,6 +3,10 @@ import UserProfileContext from "../../context/UserProfileContext";
 
 export default function ChangePassword() {
   const { changePassword, error } = useContext(UserProfileContext);
+  console.log(error);
+
+  const okClass = "text-black";
+  const errorClass = "text-black border-2 border-rose-500";
   return (
     <div className="bg-gray-800 text-white p-3 mx-10 mb-10 rounded-lg shadow-2xl">
       <form onSubmit={changePassword}>
@@ -13,7 +17,7 @@ export default function ChangePassword() {
             <h3 className="font-bold text-lg pb-2 border-b-2 mb-2">
               New password
             </h3>
-            <label htmlFor="old_password">Old password</label>
+            <label htmlFor="old_password">Old password *</label>
             <div className="mt-2 mb-2">
               <input
                 id="old_password"
@@ -21,27 +25,39 @@ export default function ChangePassword() {
                 type="password"
                 // required
                 autoComplete="current-password"
-                className="text-black"
+                className={
+                  error.id.includes(0) || error.id.includes(-2)
+                    ? errorClass
+                    : okClass
+                }
               />
             </div>
-            <label htmlFor="new_passowrd">New password</label>
+            <label htmlFor="new_passowrd">New password *</label>
             <div className="mt-2 mb-2">
               <input
                 id="new_passowrd"
                 name="new_passowrd"
                 type="password"
                 // required
-                className="text-black"
+                className={
+                  error.id.includes(1) || error.id.includes(-1)
+                    ? errorClass
+                    : okClass
+                }
               />
             </div>
-            <label htmlFor="repeat_passowrd">Repeat new password</label>
+            <label htmlFor="repeat_passowrd">Repeat new password *</label>
             <div className="mt-2">
               <input
                 id="repeat_passowrd"
                 name="repeat_passowrd"
                 // required
                 type="password"
-                className="text-black"
+                className={
+                  error.id.includes(2) || error.id.includes(-1)
+                    ? errorClass
+                    : okClass
+                }
               />
             </div>
           </div>

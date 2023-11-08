@@ -57,8 +57,14 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
 
-    def validate_current_password(self, value):
+    def validate_current_password(self, value1, value2):
         user = self.context["request"].user
-        if not user.check_password(value):
-            raise serializers.ValidationError("Old password is incorrect.")
-        return value
+        if not user.check_password(value1):
+            raise serializers.ValidationError(
+                {"error": "Old password is incorrect.", "id": [-2]}
+            )
+        if value1 == value2:
+            raise serializers.ValidationError(
+                {"error": "The old and new password are the same.", "id": [0, 1, 2]}
+            )
+        return value1

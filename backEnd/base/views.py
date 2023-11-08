@@ -120,14 +120,17 @@ class ChangePasswordView(
         password = request.data.get("password")
         confirm_password = request.data.get("confirm_password")
 
-        check_password = validate_password(password, confirm_password)
-        if check_password:
-            return Response(
-                {"error": check_password["error"], "id": check_password["id"]},
-                status=400,
-            )
+        check_is_empty = is_not_empty(request.data)
+        if check_is_empty:
+            return Response(check_is_empty, status=400)
 
-        if serializer.validate_current_password(request.data.get("old_password")):
+        if serializer.validate_current_password(
+            request.data.get("old_password"), request.data.get("password")
+        ):
+            check_password = validate_password(password, confirm_password)
+            if check_password:
+                return Response(check_password, status=400)
+
             hash_pasword = make_password(request.data.get("password"))
             request.POST._mutable = True
             request.data["password"] = hash_pasword
