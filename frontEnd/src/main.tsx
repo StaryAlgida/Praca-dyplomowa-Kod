@@ -14,6 +14,10 @@ import PrivateInfo from "./components/settings/PrivateInfo.tsx";
 import MainInfo from "./components/settings/MainInfo.tsx";
 import ChangePassword from "./components/settings/ChangePassword.tsx";
 import { UserProfileProvider } from "./context/UserProfileContext.tsx";
+import Sell from "./components/Sell.tsx";
+import SellAdd from "./components/sell/SellAdd.tsx";
+import SellEdit from "./components/sell/SellEdit.tsx";
+import SellInfo from "./components/sell/SellInfo.tsx";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +50,19 @@ const router = createBrowserRouter([
             </UserProfileProvider>
           </PrivateRoute>
         ),
+      },
+      {
+        path: "/sell",
+        element: (
+          <PrivateRoute>
+            <Sell />
+          </PrivateRoute>
+        ),
+        children: [
+          { path: "/sell/add", element: <SellAdd /> },
+          { path: "/sell/edit", element: <SellEdit /> },
+          { path: "/sell/info", element: <SellInfo /> },
+        ],
       },
       {
         path: "/settings",

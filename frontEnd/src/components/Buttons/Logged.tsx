@@ -76,6 +76,12 @@ export default function Logged() {
           </Menu.Items>
         </Transition>
       </Menu>
+      <Link
+        to="/sell"
+        className="ml-5 px-5 py-1 bg-emerald-600 text-white font-bold rounded"
+      >
+        Sell
+      </Link>
     </>
   );
 }
