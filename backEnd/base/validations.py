@@ -35,3 +35,14 @@ def is_email_in_use(email):
         return {"error": "Email in use.", "id": [-3]}
     except User.DoesNotExist:
         return {}
+
+
+def check_if_empty(data):
+    keys = list(data.keys())
+    i = 0
+    for key in keys:
+        if data[key] == "":
+            i += 1
+    if i == len(keys):
+        return {"error": "Empty form.", "id": [0]}
+    return {}

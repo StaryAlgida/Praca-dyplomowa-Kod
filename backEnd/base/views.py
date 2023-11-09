@@ -19,7 +19,13 @@ from .serializer import (
     UpdatePublicUserSerializer,
 )
 from .models import User
-from .validations import is_email_in_use, is_not_empty, validate_password, is_user_exist
+from .validations import (
+    check_if_empty,
+    is_email_in_use,
+    is_not_empty,
+    validate_password,
+    is_user_exist,
+)
 
 # Create your views here.
 
@@ -78,10 +84,15 @@ class UserUpdatePublicView(generics.GenericAPIView, mixins.UpdateModelMixin):
             instance, data=request.data, context={"request": request}
         )
 
+        check_is_empty = check_if_empty(request.data)
+        if check_is_empty:
+            return Response(check_is_empty, status=400)
+
         if serializer.is_valid():
             serializer.update(instance, serializer.validated_data)
-            return Response(status=200)
-        return Response(status=400)
+            return Response({"info": "Data updated."}, status=200)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserUpdatePrivateDataView(
@@ -112,7 +123,7 @@ class UserUpdatePrivateDataView(
         if serializer.validate_current_password(request.data.get("password")):
             if serializer.is_valid():
                 serializer.save()
-                return Response({"response": "Data updated."}, status=200)
+                return Response({"info": "Data updated."}, status=200)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
