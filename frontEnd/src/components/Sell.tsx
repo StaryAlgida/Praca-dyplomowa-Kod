@@ -1,12 +1,10 @@
 import { Link, Outlet } from "react-router-dom";
-import SellEditElements from "./sell/SellEditElements";
-import SellForm from "./sell/SellForm";
 
 export default function Sell() {
   return (
     <section>
       <div className="mx-20 flex gap-10 mt-10">
-        <Link to="/sell/add">Add</Link>
+        <Link to="/sell">Add</Link>
         <Link to="/sell/edit">Edit</Link>
         <Link to="/sell/info">Info</Link>
       </div>

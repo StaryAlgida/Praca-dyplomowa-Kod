@@ -1,8 +1,12 @@
+import { useContext } from "react";
+import UserProfileSellContext from "../../context/UserProfileSellContext";
+
 export default function SellAdd() {
+  const { addItemToSell } = useContext(UserProfileSellContext);
   return (
     <>
       <h2 className="font-bold text-xl">Add offer</h2>
-      <form>
+      <form onSubmit={addItemToSell}>
         <div className="flex gap-10 flex-wrap justify-center mt-5">
           <div className="bg-sky-900 p-5 rounded ">
             <h3 className="font-bold text-lg pb-2 border-b-2 mb-2">
@@ -14,12 +18,13 @@ export default function SellAdd() {
                 id="product_name"
                 name="product_name"
                 type="text"
-                autoComplete="email"
                 required
                 className="text-black"
               />
             </div>
-            <h3>Category</h3>
+            <h3 className="font-bold text-lg pb-2 border-b-2 mb-2 mt-2">
+              Category
+            </h3>
             <div className="mt-2 flex flex-col ">
               <div>
                 <input
@@ -82,7 +87,7 @@ export default function SellAdd() {
               Price and quantity
             </h3>
             <label htmlFor="price">Price</label>
-            <div className="mt-2">
+            <div className="mt-1 mb-2">
               <input
                 id="price"
                 name="price"
@@ -91,7 +96,7 @@ export default function SellAdd() {
               />
             </div>
             <label htmlFor="quantity">Quantity</label>
-            <div className="mt-2">
+            <div className="mt-1 mb-2">
               <input
                 id="quantity"
                 name="quantity"
@@ -99,12 +104,12 @@ export default function SellAdd() {
                 className="text-black"
               />
             </div>
-            <label htmlFor="last_name">Pictures</label>
-            <div className="mt-2">
+            <label htmlFor="picture">Pictures</label>
+            <div className="mt-1 mb-2">
               <input
-                id="last_name"
-                name="last_name"
-                type="text"
+                id="picture"
+                name="picture"
+                type="picture"
                 className="text-black"
               />
             </div>
@@ -120,7 +125,7 @@ export default function SellAdd() {
             ></textarea>
           </div>
         </div>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mt-2 gap-3">
           <button type="submit">Save</button>
           <button type="reset">Reset</button>
         </div>

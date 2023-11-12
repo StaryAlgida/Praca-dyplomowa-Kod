@@ -18,12 +18,15 @@ import Sell from "./components/Sell.tsx";
 import SellAdd from "./components/sell/SellAdd.tsx";
 import SellEdit from "./components/sell/SellEdit.tsx";
 import SellInfo from "./components/sell/SellInfo.tsx";
+import ErrorPage from "./components/errors/ErrorPage.tsx";
+import { UserProfileSellProvider } from "./context/UserProfileSellContext.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
+      { path: "*", element: <ErrorPage /> },
       { path: "/", element: <Section /> },
       {
         path: "/login",
@@ -55,11 +58,13 @@ const router = createBrowserRouter([
         path: "/sell",
         element: (
           <PrivateRoute>
-            <Sell />
+            <UserProfileSellProvider>
+              <Sell />
+            </UserProfileSellProvider>
           </PrivateRoute>
         ),
         children: [
-          { path: "/sell/add", element: <SellAdd /> },
+          { path: "/sell", element: <SellAdd /> },
           { path: "/sell/edit", element: <SellEdit /> },
           { path: "/sell/info", element: <SellInfo /> },
         ],
@@ -72,8 +77,8 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
         children: [
+          { path: "/settings", element: <MainInfo /> },
           { path: "/settings/privateinfo", element: <PrivateInfo /> },
-          { path: "/settings/publicinfo", element: <MainInfo /> },
           { path: "/settings/changepassword", element: <ChangePassword /> },
         ],
       },
