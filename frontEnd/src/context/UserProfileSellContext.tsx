@@ -36,18 +36,19 @@ export const UserProfileSellProvider = ({
 }) => {
   const navigate = useNavigate();
   const [sellItems, setSellItems] = useState<SellItems[]>([]);
+  const authTokens = JSON.parse(localStorage.getItem("authTokens") as string);
 
   const addItemToSell = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const formData = new FormData(e.currentTarget);
-      const product_name = formData.get("product_name") as string;
+      const title = formData.get("product_name") as string;
 
-      const electronics = formData.get("electronics") as string;
-      const fashion = formData.get("fashion") as string;
-      const home_garden = formData.get("home_garden") as string;
-      const automotive = formData.get("automotive") as string;
-      const health_beauty = formData.get("health_beauty") as string;
+      const electronics = formData.get("electronics") ? true : false;
+      const fashion = formData.get("fashion") ? true : false;
+      const home_garden = formData.get("home_garden") ? true : false;
+      const automotive = formData.get("automotive") ? true : false;
+      const health_beauty = formData.get("health_beauty") ? true : false;
 
       const price = formData.get("price") as string;
       const quantity = formData.get("quantity") as string;
@@ -55,14 +56,27 @@ export const UserProfileSellProvider = ({
 
       const description = formData.get("description") as string;
 
-      const response = await client.post("/sell/add", {
-        product_name,
-        tags: [electronics, fashion, home_garden, automotive, health_beauty],
-        price,
-        quantity,
-        picture,
-        description,
-      });
+      const response = await client.post(
+        "/sell/add",
+        {
+          title,
+          electronics,
+          fashion,
+          home_garden,
+          automotive,
+          health_beauty,
+          price,
+          quantity,
+          picture,
+          description,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        }
+      );
 
       if (response.status === 201) {
         console.log("ok");
