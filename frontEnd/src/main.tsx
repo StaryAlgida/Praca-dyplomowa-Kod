@@ -14,12 +14,19 @@ import PrivateInfo from "./components/settings/PrivateInfo.tsx";
 import MainInfo from "./components/settings/MainInfo.tsx";
 import ChangePassword from "./components/settings/ChangePassword.tsx";
 import { UserProfileProvider } from "./context/UserProfileContext.tsx";
+import Sell from "./components/Sell.tsx";
+import SellAdd from "./components/sell/SellAdd.tsx";
+import SellEdit from "./components/sell/SellEdit.tsx";
+import SellInfo from "./components/sell/SellInfo.tsx";
+import ErrorPage from "./components/errors/ErrorPage.tsx";
+import { UserProfileSellProvider } from "./context/UserProfileSellContext.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
+      { path: "*", element: <ErrorPage /> },
       { path: "/", element: <Section /> },
       {
         path: "/login",
@@ -48,6 +55,21 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/sell",
+        element: (
+          <PrivateRoute>
+            <UserProfileSellProvider>
+              <Sell />
+            </UserProfileSellProvider>
+          </PrivateRoute>
+        ),
+        children: [
+          { path: "/sell", element: <SellAdd /> },
+          { path: "/sell/edit", element: <SellEdit /> },
+          { path: "/sell/info", element: <SellInfo /> },
+        ],
+      },
+      {
         path: "/settings",
         element: (
           <PrivateRoute>
@@ -55,8 +77,8 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
         children: [
+          { path: "/settings", element: <MainInfo /> },
           { path: "/settings/privateinfo", element: <PrivateInfo /> },
-          { path: "/settings/publicinfo", element: <MainInfo /> },
           { path: "/settings/changepassword", element: <ChangePassword /> },
         ],
       },

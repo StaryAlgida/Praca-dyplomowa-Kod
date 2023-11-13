@@ -5,6 +5,7 @@ from .views import (
     UserUpdatePrivateDataView,
     UserUpdatePublicView,
     LoggedUserProfileView,
+    UserAddSellItemView,
 )
 
 urlpatterns = [
@@ -13,6 +14,7 @@ urlpatterns = [
     path("profile/info", LoggedUserProfileView.as_view(), name="profile"),
     path("profile/privinfoupdate", UserUpdatePrivateDataView.as_view(), name="profile"),
     path("profile/passwordupdate", ChangePasswordView.as_view(), name="profile"),
+    path("sell/add", UserAddSellItemView.as_view(), name="profile"),
 ]
 
 

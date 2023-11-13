@@ -13,12 +13,13 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import make_password
 
 from .serializer import (
+    AddSellItemSerializer,
     ChangePasswordSerializer,
     UpdatePrivateInfo,
     UserSerializer,
     UpdatePublicUserSerializer,
 )
-from .models import User
+from .models import SellItems, User
 from .validations import (
     check_if_empty,
     is_email_in_use,
@@ -162,9 +163,10 @@ class ChangePasswordView(
             request.data["password"] = hash_pasword
             request.data.pop("confirm_password")
             request.data.pop("old_password")
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"response": "Password updated."}, status=200)
+
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response({"response": "Password updated."}, status=200)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -177,3 +179,29 @@ class LoggedUserProfileView(generics.GenericAPIView):
         user = request.user
         serializer_class = UpdatePublicUserSerializer(user, many=False)
         return Response(serializer_class.data, status=200)
+
+
+class UserAddSellItemView(
+    generics.GenericAPIView,
+    mixins.CreateModelMixin,
+):
+    permission_classes = [IsAuthenticated]
+    queryset = SellItems.objects.all()
+    serializer_class = AddSellItemSerializer
+
+    def post(self, request, *args, **kwargs):
+        is_empty = check_if_empty(request.data)
+        if is_empty:
+            return Response(is_empty, status=400)
+        data = request.data
+        data["user"] = request.user.id
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=200)
+
+    def get(self, request, *args, **kwargs):
+        user_id = request.user.id
+        serializer = self.serializer_class(user_id)
+        print(serializer.data)
+        return Response(status=200)
