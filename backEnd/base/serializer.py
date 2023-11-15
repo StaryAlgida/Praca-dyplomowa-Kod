@@ -75,18 +75,12 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 class AddSellItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellItems
-        fields = [
-            "user",
-            "title",
-            "electronics",
-            "fashion",
-            "home_garden",
-            "automotive",
-            "health_beauty",
-            "price",
-            "quantity",
-            "description",
-        ]
+        fields = "__all__"
+
+    def create(self, validated_data):
+        user = validated_data.get("user")
+        sellItems = SellItems.objects.create(**validated_data)
+        return sellItems
 
     def validate(self, data):
         fields = [
@@ -96,7 +90,6 @@ class AddSellItemSerializer(serializers.ModelSerializer):
             "automotive",
             "health_beauty",
         ]
-        print(data)
         not_null = 0
         for field in fields:
             if data.get(field) is not False:
@@ -111,3 +104,25 @@ class AddSellItemSerializer(serializers.ModelSerializer):
                 {"error": "Picture are required.", "id": 4}
             )
         return data
+
+
+class InfoSellItemsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SellItems
+        fields = [
+            "title",
+            "electronics",
+            "fashion",
+            "home_garden",
+            "automotive",
+            "health_beauty",
+            "price",
+            "quantity",
+            "description",
+        ]
+
+
+class TitleOfferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SellItems
+        fields = ["id", "title"]
