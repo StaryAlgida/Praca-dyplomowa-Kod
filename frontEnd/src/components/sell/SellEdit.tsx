@@ -5,9 +5,8 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import { TitleId } from "./Interfaces";
 
 export default function SellEdit() {
-  const { getSellItemInfo, getSellItemsTitle, titles } = useContext(
-    UserProfileSellContext
-  );
+  const { getSellItemInfo, getSellItemsTitle, titles, deleteSellItem } =
+    useContext(UserProfileSellContext);
   const [openFomr, setOpenForm] = useState(
     [...Array(Object.values(titles).length)].map(() => false)
   );
@@ -56,7 +55,13 @@ export default function SellEdit() {
                       />
                     )}
                   </button>
-                  <button className="font-bold px-4 py-1 rounded bg-red-500 hover:bg-red-600 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
+                  <button
+                    onClick={() => {
+                      deleteSellItem(t.id);
+                      setTimeout(getSellItemsTitle, 1000);
+                    }}
+                    className="font-bold px-4 py-1 rounded bg-red-500 hover:bg-red-600 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300"
+                  >
                     Delete
                   </button>
                 </div>

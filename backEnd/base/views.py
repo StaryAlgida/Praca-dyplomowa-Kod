@@ -230,3 +230,10 @@ class GetFullOfferView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.update(sell_item, serializer.validated_data)
         return Response("ok", status=200)
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        item_id = kwargs["index"]
+        sell_item = self.queryset.get(user_id=user, id=item_id)
+        sell_item.delete()
+        return Response("ok", status=200)
