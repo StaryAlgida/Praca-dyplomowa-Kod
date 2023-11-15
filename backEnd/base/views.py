@@ -13,12 +13,15 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import make_password
 
 from .serializer import (
+    AddSellItemSerializer,
     ChangePasswordSerializer,
+    InfoSellItemsSerializer,
+    TitleOfferSerializer,
     UpdatePrivateInfo,
     UserSerializer,
     UpdatePublicUserSerializer,
 )
-from .models import User
+from .models import SellItems, User
 from .validations import (
     check_if_empty,
     is_email_in_use,
@@ -78,8 +81,8 @@ class UserUpdatePublicView(generics.GenericAPIView, mixins.UpdateModelMixin):
         return Response(serializer_class.data, status=200)
 
     def put(self, request, *args, **kwargs):
-        user = request.data["username"]
-        instance = self.queryset.get(username=user)
+        user = request.user
+        instance = self.queryset.get(id=user.id)
         serializer = self.serializer_class(
             instance, data=request.data, context={"request": request}
         )
@@ -98,7 +101,6 @@ class UserUpdatePublicView(generics.GenericAPIView, mixins.UpdateModelMixin):
 class UserUpdatePrivateDataView(
     generics.GenericAPIView,
     mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
 ):
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
@@ -121,16 +123,14 @@ class UserUpdatePrivateDataView(
             return Response(check_is_empty, status=400)
 
         if serializer.validate_current_password(request.data.get("password")):
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"info": "Data updated."}, status=200)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
+            serializer.update(instance, serializer.validated_data)
+            return Response({"info": "Data updated."}, status=200)
 
 
 class ChangePasswordView(
     generics.GenericAPIView,
     mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
 ):
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
@@ -162,9 +162,10 @@ class ChangePasswordView(
             request.data["password"] = hash_pasword
             request.data.pop("confirm_password")
             request.data.pop("old_password")
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"response": "Password updated."}, status=200)
+
+            serializer.is_valid(raise_exception=True)
+            serializer.update(instance, serializer.validated_data)
+            return Response({"response": "Password updated."}, status=200)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -177,3 +178,55 @@ class LoggedUserProfileView(generics.GenericAPIView):
         user = request.user
         serializer_class = UpdatePublicUserSerializer(user, many=False)
         return Response(serializer_class.data, status=200)
+
+
+class UserAddSellItemView(
+    generics.GenericAPIView,
+    mixins.CreateModelMixin,
+):
+    permission_classes = [IsAuthenticated]
+    queryset = SellItems.objects.all()
+    serializer_class = AddSellItemSerializer
+
+    def post(self, request, *args, **kwargs):
+        is_empty = check_if_empty(request.data)
+        if is_empty:
+            return Response(is_empty, status=400)
+
+        data = request.data
+        data["user"] = request.user.id
+
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=201)
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        sell_items = self.queryset.filter(user_id=user.id)
+        serializer = TitleOfferSerializer(instance=sell_items, many=True)
+        return Response(serializer.data, status=200)
+
+
+class GetFullOfferView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = SellItems.objects.all()
+    serializer_class = InfoSellItemsSerializer
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        item_id = kwargs["index"]
+        sell_items = self.queryset.filter(user_id=user, id=item_id)
+        serializer = self.serializer_class(instance=sell_items, many=True)
+        return Response(serializer.data, status=200)
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        item_id = kwargs["index"]
+        sell_item = self.queryset.get(user_id=user, id=item_id)
+        serializer = self.serializer_class(
+            instance=sell_item, data=request.data, context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.update(sell_item, serializer.validated_data)
+        return Response("ok", status=200)

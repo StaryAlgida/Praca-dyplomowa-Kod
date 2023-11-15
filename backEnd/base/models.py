@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
+from django.conf import settings
 
 
 class User(AbstractUser):
@@ -17,3 +18,22 @@ class User(AbstractUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
+
+
+class SellItems(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=300, null=False, blank=False)
+
+    electronics = models.BooleanField(default=False)
+    fashion = models.BooleanField(default=False)
+    home_garden = models.BooleanField(default=False)
+    automotive = models.BooleanField(default=False)
+    health_beauty = models.BooleanField(default=False)
+
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.IntegerField(default=0)
+    # picture = models.ImageField(upload_to='product_images/')
+    description = models.TextField(max_length=1000)
+
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)

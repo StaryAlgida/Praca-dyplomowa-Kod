@@ -21,7 +21,7 @@ export default function Settings() {
     <section>
       <div className="flex gap-3 mx-10 mt-10 pb-2">
         <Link
-          to="/settings/publicinfo"
+          to="/settings"
           onClick={() => buttonClick(0)}
           className={buttons[0] ? clicked : noClicked}
         >

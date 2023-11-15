@@ -65,17 +65,14 @@ const UserProfileContext = createContext<UserProfileContextData>({
   userPrivateIfno: null,
   error: { error: "", id: [] },
   getPublicInfoForm: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  publickInfoUpdate: async (e: React.FormEvent<HTMLFormElement>) => {},
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  resetPrivateInfo: async (e: React.FormEvent<HTMLFormElement>) => {},
+  publickInfoUpdate: async () => {},
+  resetPrivateInfo: async () => {},
   getPrivateInfo: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  changePassword: async (e: React.FormEvent<HTMLFormElement>) => {},
+  changePassword: async () => {},
   getPublicInfo: () => {},
   resetError: () => {},
 });
-
+// e: React.FormEvent<HTMLFormElement>
 function getUser() {
   const storedTokens = localStorage.getItem("authTokens");
   if (storedTokens) {
