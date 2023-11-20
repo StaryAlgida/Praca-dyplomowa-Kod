@@ -1,4 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
+import { UserProfileSellProvider } from "../context/UserProfileSellContext";
 
 export default function Sell() {
   return (
@@ -14,7 +15,9 @@ export default function Sell() {
         <SellEditElements />
         <SellForm />
       </div> */}
-        <Outlet />
+        <UserProfileSellProvider>
+          <Outlet />
+        </UserProfileSellProvider>
       </div>
     </section>
   );

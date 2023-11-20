@@ -1,5 +1,9 @@
 // import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
@@ -18,8 +22,8 @@ import Sell from "./components/Sell.tsx";
 import SellAdd from "./components/sell/SellAdd.tsx";
 import SellEdit from "./components/sell/SellEdit.tsx";
 import SellInfo from "./components/sell/SellInfo.tsx";
+import { OffersProvider } from "./context/OffersContext.tsx";
 import ErrorPage from "./components/errors/ErrorPage.tsx";
-import { UserProfileSellProvider } from "./context/UserProfileSellContext.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,7 +31,20 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: "*", element: <ErrorPage /> },
-      { path: "/", element: <Section /> },
+      { path: "/error/:code", element: <ErrorPage /> },
+      {
+        index: true,
+        path: "/",
+        element: <Navigate to="/1" />,
+      },
+      {
+        path: "/:page",
+        element: (
+          <OffersProvider>
+            <Section />
+          </OffersProvider>
+        ),
+      },
       {
         path: "/login",
         element: (
@@ -58,9 +75,9 @@ const router = createBrowserRouter([
         path: "/sell",
         element: (
           <PrivateRoute>
-            <UserProfileSellProvider>
-              <Sell />
-            </UserProfileSellProvider>
+            {/* <UserProfileSellProvider> */}
+            <Sell />
+            {/* </UserProfileSellProvider> */}
           </PrivateRoute>
         ),
         children: [
