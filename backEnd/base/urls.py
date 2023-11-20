@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     ChangePasswordView,
-    GetFullOfferView,
+    GetFullOfferUpdateDeleteView,
+    AllOffersView,
     RegisterView,
     UserUpdatePrivateDataView,
     UserUpdatePublicView,
@@ -22,7 +23,12 @@ urlpatterns = [
         "profile/passwordupdate", ChangePasswordView.as_view(), name="profilepassword"
     ),
     path("sell/add", UserAddSellItemView.as_view(), name="seladd"),
-    path("sell/itemInfo/<int:index>", GetFullOfferView.as_view(), name="sellinfo"),
+    path(
+        "sell/itemInfo/<int:index>",
+        GetFullOfferUpdateDeleteView.as_view(),
+        name="sellinfo",
+    ),
+    path("offers/", AllOffersView.as_view(), name="offers"),
 ]
 
 
