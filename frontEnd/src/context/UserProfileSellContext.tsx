@@ -17,6 +17,7 @@ interface UserProfileSellContextData {
     e: React.FormEvent<HTMLFormElement>,
     index: number
   ) => Promise<void>;
+  deleteSellItem: (index: number) => void;
 }
 
 const UserProfileSellContext = createContext<UserProfileSellContextData>({
@@ -36,6 +37,7 @@ const UserProfileSellContext = createContext<UserProfileSellContextData>({
   getSellItemsTitle: () => {},
   getSellItemInfo: () => {},
   editSellItem: async () => {},
+  deleteSellItem: () => {},
 });
 
 export default UserProfileSellContext;
@@ -195,6 +197,22 @@ export const UserProfileSellProvider = ({
     }
   };
 
+  const deleteSellItem = async (index: number) => {
+    try {
+      const response = await client.delete(`sell/itemInfo/${index}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+      console.log(response);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.log(err);
+      }
+    }
+  };
+
   const contextData = {
     sellItem,
     titles,
@@ -202,6 +220,7 @@ export const UserProfileSellProvider = ({
     getSellItemsTitle,
     getSellItemInfo,
     editSellItem,
+    deleteSellItem,
   };
 
   return (

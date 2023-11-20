@@ -126,3 +126,38 @@ class TitleOfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellItems
         fields = ["id", "title"]
+
+
+class OffertsInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SellItems
+        fields = [
+            "id",
+            "title",
+            "electronics",
+            "fashion",
+            "home_garden",
+            "automotive",
+            "health_beauty",
+            "price",
+        ]
+
+
+class ShowOffertsSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source="user.username")
+    company_name = serializers.CharField(source="user.company_name")
+
+    class Meta:
+        model = SellItems
+        fields = [
+            "username",
+            "company_name",
+            "id",
+            "title",
+            "electronics",
+            "fashion",
+            "home_garden",
+            "automotive",
+            "health_beauty",
+            "price",
+        ]

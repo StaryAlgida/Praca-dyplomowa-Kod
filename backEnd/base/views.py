@@ -16,6 +16,8 @@ from .serializer import (
     AddSellItemSerializer,
     ChangePasswordSerializer,
     InfoSellItemsSerializer,
+    OffertsInfoSerializer,
+    ShowOffertsSerializer,
     TitleOfferSerializer,
     UpdatePrivateInfo,
     UserSerializer,
@@ -29,6 +31,8 @@ from .validations import (
     validate_password,
     is_user_exist,
 )
+
+from .pagination import CustomPagination
 
 # Create your views here.
 
@@ -193,13 +197,9 @@ class UserAddSellItemView(
         if is_empty:
             return Response(is_empty, status=400)
 
-        data = request.data
-        data["user"] = request.user.id
+        request.data["user"] = request.user.id
 
-        serializer = self.serializer_class(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=201)
+        return self.create(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -208,25 +208,45 @@ class UserAddSellItemView(
         return Response(serializer.data, status=200)
 
 
-class GetFullOfferView(generics.GenericAPIView):
+class GetFullOfferUpdateDeleteView(
+    generics.GenericAPIView, mixins.UpdateModelMixin, mixins.DestroyModelMixin
+):
     permission_classes = [IsAuthenticated]
     queryset = SellItems.objects.all()
     serializer_class = InfoSellItemsSerializer
+    lookup_url_kwarg = "index"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):  # all offers created by user
         user = request.user
         item_id = kwargs["index"]
         sell_items = self.queryset.filter(user_id=user, id=item_id)
         serializer = self.serializer_class(instance=sell_items, many=True)
         return Response(serializer.data, status=200)
 
-    def put(self, request, *args, **kwargs):
-        user = request.user
-        item_id = kwargs["index"]
-        sell_item = self.queryset.get(user_id=user, id=item_id)
-        serializer = self.serializer_class(
-            instance=sell_item, data=request.data, context={"request": request}
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.update(sell_item, serializer.validated_data)
-        return Response("ok", status=200)
+    def put(self, request, *args, **kwargs):  # update offer
+        # user = request.user
+        # item_id = kwargs["index"]
+        # sell_item = self.queryset.get(user_id=user, id=item_id)
+
+        # serializer = self.serializer_class(
+        #     instance=sell_item, data=request.data, context={"request": request}
+        # )
+        # serializer.is_valid(raise_exception=True)
+        # serializer.update(sell_item, serializer.validated_data)
+
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        # user = request.user
+        # item_id = kwargs["index"]
+        # sell_item = self.queryset.get(user_id=user, id=item_id)
+        # sell_item.delete()
+        # return Response("ok", status=200)
+        return self.destroy(request, *args, **kwargs)
+
+
+class AllOffersView(generics.ListAPIView):
+    permission_classes = [permissions.AllowAny]
+    pagination_class = CustomPagination
+    serializer_class = ShowOffertsSerializer
+    queryset = SellItems.objects.all()
