@@ -4,6 +4,14 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.conf import settings
 
 
+def profile_img(instance, filename):
+    return f"profile_pictures/prof_{instance.id}.{filename.split('.')[-1]}"
+
+
+def product_img(instance, filename):
+    return f"products_pictures/pic_{instance.id}.{filename.split('.')[-1]}"
+
+
 class User(AbstractUser):
     email = models.EmailField(unique=True, max_length=100)
     username = models.CharField(unique=True, max_length=100)
@@ -15,6 +23,12 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=100, null=True, blank=True)
     contact_email = models.EmailField(null=True, blank=True)
     phone_number = PhoneNumberField(default=None, null=True, blank=True)
+    profile_picture = models.ImageField(
+        upload_to=profile_img,
+        blank=False,
+        null=True,
+        default="defaults/default_user.png",
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
@@ -32,7 +46,12 @@ class SellItems(models.Model):
 
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField(default=0)
-    # picture = models.ImageField(upload_to='product_images/')
+    picture = models.ImageField(
+        upload_to=product_img,
+        blank=False,
+        null=True,
+        default="defaults/default_product.png",
+    )
     description = models.TextField(max_length=1000)
 
     # def save(self, *args, **kwargs):

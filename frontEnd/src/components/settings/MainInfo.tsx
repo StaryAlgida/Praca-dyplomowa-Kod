@@ -27,7 +27,7 @@ export default function MainInfo() {
 
   return (
     <div className="bg-gray-800 text-white p-3 mx-10 mb-10 rounded-lg shadow-2xl">
-      <form onSubmit={publickInfoUpdate}>
+      <form onSubmit={publickInfoUpdate} encType="multipart/form-data">
         <h2 className="font-bold text-xl">Change account details</h2>
         <div className="flex gap-10 flex-wrap justify-center mt-5">
           <div className="bg-sky-900 p-5 rounded ">
@@ -103,6 +103,16 @@ export default function MainInfo() {
                 onChange={(e) => {
                   setLast(e.target.value);
                 }}
+              />
+            </div>
+            <label htmlFor="profile_picture">Profile picture</label>
+            <div className="mt-2">
+              <input
+                id="profile_picture"
+                name="profile_picture"
+                type="file"
+                accept="image/*"
+                className="text-black"
               />
             </div>
           </div>

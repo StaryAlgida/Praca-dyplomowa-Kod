@@ -24,6 +24,7 @@ import SellEdit from "./components/sell/SellEdit.tsx";
 import SellInfo from "./components/sell/SellInfo.tsx";
 import { OffersProvider } from "./context/OffersContext.tsx";
 import ErrorPage from "./components/errors/ErrorPage.tsx";
+import Offer from "./offerts/Offer.tsx";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
         index: true,
         path: "/",
         element: <Navigate to="/1" />,
+      },
+      {
+        path: "/offer/:id",
+        element: <Offer />,
       },
       {
         path: "/:page",

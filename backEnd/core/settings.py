@@ -1,4 +1,5 @@
 from datetime import timedelta
+import os
 
 """
 Django settings for core project.
@@ -27,7 +28,7 @@ SECRET_KEY = "django-insecure-cn*)+m)z*tnd3h*@gd-7++$jctg1t=s^#0nh(y@(3*s^o2y7mr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["http://localhost:5173", "127.0.0.1", "*"]
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -68,6 +69,9 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 # Application definition
 

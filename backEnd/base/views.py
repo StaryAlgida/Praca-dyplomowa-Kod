@@ -9,6 +9,7 @@ from rest_framework import (
     permissions,
 )
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import make_password
 
@@ -16,7 +17,9 @@ from .serializer import (
     AddSellItemSerializer,
     ChangePasswordSerializer,
     InfoSellItemsSerializer,
+    LogedUserProfileInfo,
     OffertsInfoSerializer,
+    ShowOfferInfoSerializer,
     ShowOffertsSerializer,
     TitleOfferSerializer,
     UpdatePrivateInfo,
@@ -78,6 +81,7 @@ class UserUpdatePublicView(generics.GenericAPIView, mixins.UpdateModelMixin):
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UpdatePublicUserSerializer
+    parser_classes = (MultiPartParser,)
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -90,16 +94,15 @@ class UserUpdatePublicView(generics.GenericAPIView, mixins.UpdateModelMixin):
         serializer = self.serializer_class(
             instance, data=request.data, context={"request": request}
         )
-
         check_is_empty = check_if_empty(request.data)
         if check_is_empty:
-            return Response(check_is_empty, status=400)
+            return Response(check_is_empty, status=400)  #
 
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.update(instance, serializer.validated_data)
             return Response({"info": "Data updated."}, status=200)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)  # serializer.errors,
 
 
 class UserUpdatePrivateDataView(
@@ -177,10 +180,11 @@ class ChangePasswordView(
 class LoggedUserProfileView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
+    serializer_class = LogedUserProfileInfo
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        serializer_class = UpdatePublicUserSerializer(user, many=False)
+        serializer_class = self.serializer_class(user, many=False)
         return Response(serializer_class.data, status=200)
 
 
@@ -191,17 +195,16 @@ class UserAddSellItemView(
     permission_classes = [IsAuthenticated]
     queryset = SellItems.objects.all()
     serializer_class = AddSellItemSerializer
+    parser_classes = (MultiPartParser,)
 
     def post(self, request, *args, **kwargs):
         is_empty = check_if_empty(request.data)
         if is_empty:
             return Response(is_empty, status=400)
-
         request.data["user"] = request.user.id
-
         return self.create(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):  # all oferts created by user titles only
         user = request.user
         sell_items = self.queryset.filter(user_id=user.id)
         serializer = TitleOfferSerializer(instance=sell_items, many=True)
@@ -216,7 +219,7 @@ class GetFullOfferUpdateDeleteView(
     serializer_class = InfoSellItemsSerializer
     lookup_url_kwarg = "index"
 
-    def get(self, request, *args, **kwargs):  # all offers created by user
+    def get(self, request, *args, **kwargs):  # info about one offer
         user = request.user
         item_id = kwargs["index"]
         sell_items = self.queryset.filter(user_id=user, id=item_id)
@@ -250,3 +253,10 @@ class AllOffersView(generics.ListAPIView):
     pagination_class = CustomPagination
     serializer_class = ShowOffertsSerializer
     queryset = SellItems.objects.all()
+
+
+class OfferView(generics.RetrieveAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = ShowOfferInfoSerializer
+    queryset = SellItems.objects.all()
+    lookup_field = "id"

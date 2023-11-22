@@ -24,6 +24,7 @@ interface LoggedUserInfo {
   last_name: string;
   contact_email: string;
   phone_number: string;
+  profile_picture: string;
 }
 
 interface PrivateInfo {
@@ -58,6 +59,7 @@ const UserProfileContext = createContext<UserProfileContextData>({
     last_name: "",
     contact_email: "",
     phone_number: "",
+    profile_picture: "",
   },
   soldInfo: null,
   boughtInfo: null,
@@ -98,6 +100,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     last_name: "",
     contact_email: "",
     phone_number: "",
+    profile_picture: "",
   });
   const [error, setError] = useState<Errors>({ error: "", id: [] });
 
@@ -115,6 +118,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       const company_name = formData.get("company_name") as string;
       const first_name = formData.get("first_name") as string;
       const last_name = formData.get("last_name") as string;
+
       if (
         !contact_email &&
         !phone_number &&
@@ -124,23 +128,12 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       ) {
         console.log("you change nothing");
       } else {
-        const response = await client.put(
-          "/profile/updateinfo/",
-          {
-            username,
-            contact_email,
-            phone_number,
-            company_name,
-            first_name,
-            last_name,
+        const response = await client.put("/profile/updateinfo/", formData, {
+          headers: {
+            // "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
           },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authTokens.access}`,
-            },
-          }
-        );
+        });
         if (response.status === 200) {
           navigate("/profile");
         }
@@ -160,6 +153,8 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
           Authorization: `Bearer ${authTokens.access}`,
         },
       });
+      console.log(response);
+
       if (response.status === 200) {
         setMainUserInfo(response.data);
       }

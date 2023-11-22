@@ -20,15 +20,28 @@ class UpdatePublicUserSerializer(serializers.ModelSerializer):
             "last_name",
             "contact_email",
             "phone_number",
+            "profile_picture",
         ]
 
     def update(self, instance, data):
-        print(data)
         for field, value in data.items():
-            if value != "":
+            if value != "" and value != None:
                 setattr(instance, field, value)
         instance.save()
         return instance
+
+
+class LogedUserProfileInfo(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "company_name",
+            "first_name",
+            "last_name",
+            "contact_email",
+            "phone_number",
+            "profile_picture",
+        ]
 
 
 class UpdatePrivateInfo(serializers.ModelSerializer):
@@ -89,6 +102,7 @@ class AddSellItemSerializer(serializers.ModelSerializer):
             "home_garden",
             "automotive",
             "health_beauty",
+            "picture",
         ]
         not_null = 0
         for field in fields:
@@ -148,6 +162,7 @@ class ShowOffertsSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source="user.company_name")
 
     class Meta:
+        ordering = ["id"]
         model = SellItems
         fields = [
             "username",
@@ -160,4 +175,28 @@ class ShowOffertsSerializer(serializers.ModelSerializer):
             "automotive",
             "health_beauty",
             "price",
+            "picture",
+        ]
+
+
+class ShowOfferInfoSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source="user.username")
+    company_name = serializers.CharField(source="user.company_name")
+
+    class Meta:
+        model = SellItems
+        fields = [
+            "username",
+            "company_name",
+            "id",
+            "title",
+            "electronics",
+            "fashion",
+            "home_garden",
+            "automotive",
+            "health_beauty",
+            "price",
+            "quantity",
+            "picture",
+            "description",
         ]

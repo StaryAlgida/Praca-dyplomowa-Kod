@@ -6,17 +6,17 @@ export default function SellAdd() {
   return (
     <>
       <h2 className="font-bold text-xl">Add offer</h2>
-      <form onSubmit={addItemToSell}>
+      <form onSubmit={addItemToSell} encType="multipart/form-data">
         <div className="flex gap-10 flex-wrap justify-center mt-5">
           <div className="bg-sky-900 p-5 rounded ">
             <h3 className="font-bold text-lg pb-2 border-b-2 mb-2">
               Main Info
             </h3>
-            <label htmlFor="product_name">Product name</label>
+            <label htmlFor="title">Product name</label>
             <div className="mt-2">
               <input
-                id="product_name"
-                name="product_name"
+                id="title"
+                name="title"
                 type="text"
                 required
                 className="text-black"
@@ -30,7 +30,7 @@ export default function SellAdd() {
                 <input
                   id="electronics"
                   name="electronics"
-                  value="electronics"
+                  value="True"
                   type="checkbox"
                   className="text-black"
                 />
@@ -41,7 +41,7 @@ export default function SellAdd() {
                 <input
                   id="fashion"
                   name="fashion"
-                  value="fashion"
+                  value="True"
                   type="checkbox"
                   className="text-black"
                 />
@@ -52,7 +52,7 @@ export default function SellAdd() {
                 <input
                   id="home_garden"
                   name="home_garden"
-                  value="home_garden"
+                  value="True"
                   type="checkbox"
                   className="text-black"
                 />
@@ -63,7 +63,7 @@ export default function SellAdd() {
                 <input
                   id="automotive"
                   name="automotive"
-                  value="automotive"
+                  value="True"
                   type="checkbox"
                   className="text-black"
                 />
@@ -74,7 +74,7 @@ export default function SellAdd() {
                 <input
                   id="health_beauty"
                   name="health_beauty"
-                  value="health_beauty"
+                  value="True"
                   type="checkbox"
                   className="text-black"
                 />
@@ -104,13 +104,14 @@ export default function SellAdd() {
                 className="text-black"
               />
             </div>
-            <label htmlFor="picture">Pictures</label>
-            <div className="mt-1 mb-2">
+            <label htmlFor="profile_picture">Pictures</label>
+            <div className="mt-2">
               <input
                 id="picture"
                 name="picture"
-                type="picture"
-                className="text-black"
+                type="file"
+                accept="image/*"
+                className="text-white"
               />
             </div>
           </div>

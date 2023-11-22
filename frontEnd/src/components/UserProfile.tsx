@@ -16,7 +16,7 @@ export default function UserProfile() {
     <section>
       <div className="flex m-10">
         <img
-          src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+          src={`http://127.0.0.1:8000${mainUserInfo.profile_picture}`}
           alt="profile picture"
           className="w-40"
         />

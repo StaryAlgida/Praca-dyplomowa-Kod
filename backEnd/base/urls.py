@@ -3,6 +3,7 @@ from .views import (
     ChangePasswordView,
     GetFullOfferUpdateDeleteView,
     AllOffersView,
+    OfferView,
     RegisterView,
     UserUpdatePrivateDataView,
     UserUpdatePublicView,
@@ -29,9 +30,5 @@ urlpatterns = [
         name="sellinfo",
     ),
     path("offers/", AllOffersView.as_view(), name="offers"),
+    path("offer/<int:id>/", OfferView.as_view(), name="item-detail"),
 ]
-
-
-# todo add path:
-# profile/privinfoupdate
-# profile/passwordupdate

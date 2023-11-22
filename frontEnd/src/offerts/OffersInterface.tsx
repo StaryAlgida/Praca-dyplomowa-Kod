@@ -9,6 +9,7 @@ interface Offer {
   automotive: boolean;
   health_beauty: boolean;
   price: string;
+  picture: string;
 }
 
 interface Offers {
