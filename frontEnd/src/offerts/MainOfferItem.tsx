@@ -69,7 +69,7 @@ export default function MainOfferItem({ product }: { product: Offer }) {
         </div>
         <div className="flex flex-col items-center">
           <p className="text-sm font-medium text-gray-900">
-            {product.price} zł
+            {product.price} PLN
           </p>
           <button className="text-sm font-medium text-gray-900 bg-green-200 p-1 px-3 rounded-full">
             Buy

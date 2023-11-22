@@ -27,6 +27,7 @@ function classNames(...classes: string[]) {
 
 export default function Header() {
   const { user } = useContext(AuthContext);
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (

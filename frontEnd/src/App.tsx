@@ -2,12 +2,15 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Outlet } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { UserProfileProvider } from "./context/UserProfileContext";
 
 function App() {
   return (
     <>
       <AuthProvider>
-        <Header />
+        <UserProfileProvider>
+          <Header />
+        </UserProfileProvider>
         <Outlet />
         <Footer />
       </AuthProvider>
