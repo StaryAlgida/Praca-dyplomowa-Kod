@@ -10,6 +10,8 @@ interface Offer {
   health_beauty: boolean;
   price: string;
   picture: string;
+  quantity: number;
+  description: string;
 }
 
 interface Offers {

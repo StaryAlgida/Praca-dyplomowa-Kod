@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Offer } from "./OffersInterface";
 import { v1 as uuidv1 } from "uuid";
 import Tags from "./Tags";
+import { Link } from "react-router-dom";
 
 type NestedArray = [string, unknown, string];
 type ArrayOfNestedArrays = NestedArray[];
@@ -57,10 +58,10 @@ export default function MainOfferItem({ product }: { product: Offer }) {
       <div className="mt-4 flex justify-between">
         <div>
           <h3 className="text-sm text-gray-700">
-            <a href="#">
+            <Link to={`/offer/${product.id}`}>
               <span aria-hidden="true" className="absolute inset-0" />
               {product.title}
-            </a>
+            </Link>
           </h3>
           <p className="mt-1 text-sm text-gray-500">
             {product.company_name ? product.company_name : product.username}

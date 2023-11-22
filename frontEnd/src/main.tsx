@@ -40,7 +40,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/offer/:id",
-        element: <Offer />,
+        element: (
+          <OffersProvider>
+            <Offer />
+          </OffersProvider>
+        ),
       },
       {
         path: "/:page",

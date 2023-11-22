@@ -12,7 +12,7 @@ interface OffersContextData {
   item: Offer;
   pages: number;
   getOffers: (page: string | undefined) => void;
-  getOffer: (index: number) => void;
+  getOffer: (id: string | undefined) => void;
 }
 
 const OffersContext = createContext<OffersContextData>({
@@ -32,6 +32,9 @@ const OffersContext = createContext<OffersContextData>({
         automotive: false,
         health_beauty: false,
         price: "",
+        picture: "",
+        quantity: 0,
+        description: "",
       },
     ],
   },
@@ -46,6 +49,9 @@ const OffersContext = createContext<OffersContextData>({
     automotive: false,
     health_beauty: false,
     price: "",
+    picture: "",
+    quantity: 0,
+    description: "",
   },
   pages: 0,
   getOffers: async () => {},
@@ -71,6 +77,9 @@ export const OffersProvider = ({ children }: { children: ReactNode }) => {
         automotive: false,
         health_beauty: false,
         price: "",
+        picture: "",
+        quantity: 0,
+        description: "",
       },
     ],
   });
@@ -85,11 +94,12 @@ export const OffersProvider = ({ children }: { children: ReactNode }) => {
     automotive: false,
     health_beauty: false,
     price: "",
+    picture: "",
+    quantity: 0,
+    description: "",
   });
   const [pages, setPages] = useState<number>(1);
   const nav = useNavigate();
-
-  const checkPage = () => {};
 
   const getOffers = async (page: string | undefined) => {
     try {
@@ -111,11 +121,18 @@ export const OffersProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const getOffer = async () => {
+  const getOffer = async (id: string | undefined) => {
     try {
-      console.log("ok");
+      const response = await client(`offer/${id}/`);
+      console.log(response);
+      if (response.status === 200) {
+        setItem(response.data);
+      }
     } catch (err) {
       if (axios.isAxiosError(err)) {
+        if (err.response?.status === 404) {
+          nav("/error/404");
+        }
         console.log(err);
       }
     }
