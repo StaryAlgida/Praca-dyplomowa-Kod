@@ -13,6 +13,7 @@ interface OffersContextData {
   pages: number;
   getOffers: (page: string | undefined) => void;
   getOffer: (id: string | undefined) => void;
+  sellOffer: (id: string, e: React.FormEvent<HTMLFormElement>) => void;
 }
 
 const OffersContext = createContext<OffersContextData>({
@@ -56,11 +57,13 @@ const OffersContext = createContext<OffersContextData>({
   pages: 0,
   getOffers: async () => {},
   getOffer: async () => {},
+  sellOffer: async () => {},
 });
 
 export default OffersContext;
 
 export const OffersProvider = ({ children }: { children: ReactNode }) => {
+  const authTokens = JSON.parse(localStorage.getItem("authTokens") as string);
   const [items, setItems] = useState<Offers>({
     count: 0,
     next: "",
@@ -123,10 +126,36 @@ export const OffersProvider = ({ children }: { children: ReactNode }) => {
 
   const getOffer = async (id: string | undefined) => {
     try {
-      const response = await client(`offer/${id}/`);
+      const response = await client.get(`offer/${id}/`);
       console.log(response);
       if (response.status === 200) {
         setItem(response.data);
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 404) {
+          nav("/error/404");
+        }
+        console.log(err);
+      }
+    }
+  };
+
+  const sellOffer = async (id: string, e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      console.log(authTokens);
+      if (authTokens) {
+        const formData = new FormData(e.currentTarget);
+        const response = await client.put(`sellItem/${id}/`, formData, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        });
+        console.log(response);
+      } else {
+        nav("/login");
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -144,6 +173,7 @@ export const OffersProvider = ({ children }: { children: ReactNode }) => {
     pages,
     getOffers,
     getOffer,
+    sellOffer,
   };
 
   return (

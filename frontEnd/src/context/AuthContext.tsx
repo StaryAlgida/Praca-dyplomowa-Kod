@@ -3,10 +3,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-// axios.defaults.xsrfCookieName = "csrftoken";
-// axios.defaults.xsrfHeaderName = "X-CSRFToken";
-// axios.defaults.withCredentials = true;
-
 const client = axios.create({
   baseURL: "http://127.0.0.1:8000",
 });
@@ -18,13 +14,9 @@ interface Error {
 }
 
 interface AuthContextData {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  user: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  authTokens: any;
+  user: unknown;
+  authTokens: unknown;
   error: Error;
-  // errorLogIn: { [key: string]: string } | null;
-  // errorSignUp: { [key: string]: string[] } | null;
   loginUser: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   registerUser: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   logoutUser: () => void;
@@ -34,10 +26,8 @@ const AuthContext = createContext<AuthContextData>({
   user: null,
   authTokens: null,
   error: { login: "", register: "", regId: [] },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  loginUser: async (e: React.FormEvent<HTMLFormElement>) => {},
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  registerUser: async (e: React.FormEvent<HTMLFormElement>) => {},
+  loginUser: async () => {},
+  registerUser: async () => {},
   logoutUser: () => {},
 });
 

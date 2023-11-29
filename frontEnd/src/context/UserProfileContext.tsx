@@ -34,14 +34,10 @@ interface PrivateInfo {
 
 interface UserProfileContextData {
   mainUserInfo: LoggedUserInfo;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  soldInfo: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  boughtInfo: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  username: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  userPrivateIfno: any;
+  soldInfo: unknown;
+  boughtInfo: unknown;
+  username: unknown;
+  userPrivateIfno: unknown;
   error: Errors;
   getPublicInfoForm: () => void;
   publickInfoUpdate: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -130,7 +126,6 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       } else {
         const response = await client.put("/profile/updateinfo/", formData, {
           headers: {
-            // "Content-Type": "application/json",
             Authorization: `Bearer ${authTokens.access}`,
           },
         });

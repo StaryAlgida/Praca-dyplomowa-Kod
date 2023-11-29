@@ -11,7 +11,9 @@ function App() {
         <UserProfileProvider>
           <Header />
         </UserProfileProvider>
-        <Outlet />
+        <section>
+          <Outlet />
+        </section>
         <Footer />
       </AuthProvider>
     </>

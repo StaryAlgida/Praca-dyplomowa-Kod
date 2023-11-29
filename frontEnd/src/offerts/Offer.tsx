@@ -1,5 +1,5 @@
 import { StarIcon } from "@heroicons/react/20/solid";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import OffersContext from "../context/OffersContext";
 import { useParams } from "react-router-dom";
 
@@ -10,12 +10,15 @@ function classNames(...classes: string[]) {
 }
 
 export default function Offer() {
-  const { item, getOffer } = useContext(OffersContext);
+  const { item, getOffer, sellOffer } = useContext(OffersContext);
   const { id } = useParams();
+
+  const [amount, setAmount] = useState("");
 
   useEffect(() => {
     getOffer(id);
   }, []);
+
   return (
     <div className="bg-white">
       <div className="pt-6">
@@ -68,7 +71,10 @@ export default function Offer() {
               </div>
             </div>
 
-            <form className="mt-10">
+            <form
+              onSubmit={(e) => sellOffer(id ? id : "", e)}
+              className="mt-10"
+            >
               {/* Colors */}
               <div>
                 <h3 className="text-sm font-medium text-gray-900 pl-2">
@@ -80,6 +86,11 @@ export default function Offer() {
                     className="border-2 border-sky-500 rounded-xl px-3 w-32"
                     max={item.quantity}
                     min={1}
+                    value={amount}
+                    onChange={(e) => {
+                      setAmount(e.target.value);
+                    }}
+                    placeholder="0"
                     required
                     type="number"
                   />{" "}
@@ -89,10 +100,12 @@ export default function Offer() {
 
               {/* Sizes */}
               <div className="mt-10">
-                <h2>Summary:</h2>
-                <p>Amount: 10</p>
-                <p>Price for one piece: 2</p>
-                <h3 className="font-bold text-xl">Totla price: 20zł</h3>
+                <h2>Summary</h2>
+                <p>Amount: {amount === "" ? 0 : amount}</p>
+                <p>Price for one piece: {item.price} PLN</p>
+                <h3 className="font-bold text-xl">
+                  Totla price: {Number(item.price) * Number(amount)} PLN
+                </h3>
               </div>
 
               <button
