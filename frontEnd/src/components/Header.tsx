@@ -60,9 +60,9 @@ export default function Header() {
                   <div className="flex space-x-4">
                     <Products />
                     {navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
-                        href={item.href}
+                        to={item.href}
                         className={classNames(
                           item.current
                             ? "bg-gray-900 text-white"
@@ -72,7 +72,7 @@ export default function Header() {
                         aria-current={item.current ? "page" : undefined}
                       >
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -98,7 +98,7 @@ export default function Header() {
               {navigation.map((item) => (
                 <Disclosure.Button
                   key={item.name}
-                  as="a"
+                  as="link"
                   href={item.href}
                   className={classNames(
                     item.current
@@ -125,7 +125,7 @@ function Products() {
       name: "Electronics",
       description:
         "Televisions, cell phones, laptops, tablets, cameras, game consoles and more",
-      href: "#",
+      href: "/2",
       icon: TvIcon,
     },
     {

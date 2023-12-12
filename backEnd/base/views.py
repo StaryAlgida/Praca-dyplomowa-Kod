@@ -18,9 +18,6 @@ from .serializer import (
     ChangePasswordSerializer,
     InfoSellItemsSerializer,
     LogedUserProfileInfo,
-    OffertsInfoSerializer,
-    ShowOfferInfoSerializer,
-    ShowOffertsSerializer,
     TitleOfferSerializer,
     UpdatePrivateInfo,
     UserSerializer,
@@ -34,8 +31,6 @@ from .validations import (
     validate_password,
     is_user_exist,
 )
-
-from .pagination import CustomPagination
 
 # Create your views here.
 
@@ -246,17 +241,3 @@ class GetFullOfferUpdateDeleteView(
         # sell_item.delete()
         # return Response("ok", status=200)
         return self.destroy(request, *args, **kwargs)
-
-
-class AllOffersView(generics.ListAPIView):
-    permission_classes = [permissions.AllowAny]
-    pagination_class = CustomPagination
-    serializer_class = ShowOffertsSerializer
-    queryset = SellItems.objects.all()
-
-
-class OfferView(generics.RetrieveAPIView):
-    permission_classes = [permissions.AllowAny]
-    serializer_class = ShowOfferInfoSerializer
-    queryset = SellItems.objects.all()
-    lookup_field = "id"

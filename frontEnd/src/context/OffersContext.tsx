@@ -106,7 +106,7 @@ export const OffersProvider = ({ children }: { children: ReactNode }) => {
 
   const getOffers = async (page: string | undefined) => {
     try {
-      const response = await client.get(`offers/?p=${page}`);
+      const response = await client.get(`offer/?p=${page}`);
       console.log(response.data);
       if (response.status === 200) {
         setItems(response.data);
