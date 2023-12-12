@@ -42,7 +42,7 @@ interface UserProfileContextData {
   getPublicInfoForm: () => void;
   publickInfoUpdate: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   getPrivateInfo: () => void;
-  resetPrivateInfo: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  updatePrivateInfo: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   changePassword: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   getPublicInfo: () => void;
   resetError: () => void;
@@ -64,7 +64,7 @@ const UserProfileContext = createContext<UserProfileContextData>({
   error: { error: "", id: [] },
   getPublicInfoForm: () => {},
   publickInfoUpdate: async () => {},
-  resetPrivateInfo: async () => {},
+  updatePrivateInfo: async () => {},
   getPrivateInfo: () => {},
   changePassword: async () => {},
   getPublicInfo: () => {},
@@ -85,8 +85,14 @@ function getUser() {
 
 export default UserProfileContext;
 
-// start
 export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
+  const Links = {
+    profile: "profile/",
+    update_info: "profile/update/info",
+    update_login: "profile/update/login",
+    update_password: "profile/update/password",
+  };
+
   const navigate = useNavigate();
   const username = getUser();
   const authTokens = JSON.parse(localStorage.getItem("authTokens") as string);
@@ -124,7 +130,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       ) {
         console.log("you change nothing");
       } else {
-        const response = await client.put("/profile/updateinfo/", formData, {
+        const response = await client.put(Links.update_info, formData, {
           headers: {
             Authorization: `Bearer ${authTokens.access}`,
           },
@@ -135,14 +141,18 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        console.log(err);
+        if (err.response?.status === 401) {
+          localStorage.removeItem("authTokens");
+          navigate("/login");
+        }
+        console.log(err.response);
       }
     }
   };
 
   const getPublicInfo = async () => {
     try {
-      const response = await client.get("profile/info", {
+      const response = await client.get(Links.profile, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authTokens.access}`,
@@ -155,6 +165,10 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          localStorage.removeItem("authTokens");
+          navigate("/login");
+        }
         console.log("err");
       }
     }
@@ -162,7 +176,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
 
   const getPublicInfoForm = async () => {
     try {
-      const response = await client.get("/profile/updateinfo/", {
+      const response = await client.get(Links.update_info, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authTokens.access}`,
@@ -173,6 +187,10 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          localStorage.removeItem("authTokens");
+          navigate("/login");
+        }
         console.log(err);
       }
     }
@@ -180,7 +198,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
 
   const getPrivateInfo = async () => {
     try {
-      const response = await client.get("profile/privinfoupdate", {
+      const response = await client.get(Links.update_login, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authTokens.access}`,
@@ -191,12 +209,16 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          localStorage.removeItem("authTokens");
+          navigate("/login");
+        }
         console.log("get error: ", err);
       }
     }
   };
 
-  const resetPrivateInfo = async (e: React.FormEvent<HTMLFormElement>) => {
+  const updatePrivateInfo = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const formData = new FormData(e.currentTarget);
@@ -205,7 +227,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       const password = formData.get("password") as string;
 
       const response = await client.put(
-        "profile/privinfoupdate",
+        Links.update_login,
         { email, username, password },
         {
           headers: {
@@ -219,6 +241,10 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          localStorage.removeItem("authTokens");
+          navigate("/login");
+        }
         if (err.response?.status === 400) {
           if (err.response.data.username) {
             setError({ error: err.response.data.username[0], id: [1] });
@@ -244,7 +270,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       const confirm_password = formData.get("repeat_passowrd") as string; //poprawić password
 
       const response = await client.put(
-        "profile/passwordupdate",
+        Links.update_password,
         { old_password, password, confirm_password },
         {
           headers: {
@@ -258,6 +284,10 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          localStorage.removeItem("authTokens");
+          navigate("/login");
+        }
         if (err.response?.status === 400) {
           setError({
             error: err.response.data.error,
@@ -283,7 +313,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     getPublicInfo,
     getPublicInfoForm,
     getPrivateInfo,
-    resetPrivateInfo,
+    updatePrivateInfo,
     changePassword,
     resetError,
   };

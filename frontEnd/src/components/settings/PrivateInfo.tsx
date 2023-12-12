@@ -5,7 +5,7 @@ export default function PrivateInfo() {
   const {
     resetError,
     getPrivateInfo,
-    resetPrivateInfo,
+    updatePrivateInfo,
     error,
     userPrivateIfno,
   } = useContext(UserProfileContext);
@@ -28,7 +28,7 @@ export default function PrivateInfo() {
 
   return (
     <div className="bg-gray-800 text-white p-3 mx-10 mb-10 rounded-lg shadow-2xl">
-      <form onSubmit={resetPrivateInfo}>
+      <form onSubmit={updatePrivateInfo}>
         <h2 className="font-bold text-xl">Change login details</h2>
         {error.error ? <p className="text-red-700">{error.error}</p> : <></>}
         <div className="flex gap-10 flex-wrap justify-center mt-5">
