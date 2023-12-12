@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.core.exceptions import FieldError
 from rest_framework import (
     viewsets,
     views,
@@ -8,6 +9,7 @@ from rest_framework import (
     authentication,
     permissions,
 )
+from rest_framework.response import Response
 from .serializer import (
     OfferInfoSerializer,
     OffersSerializer,
@@ -28,3 +30,13 @@ class OfferView(generics.RetrieveAPIView):
     serializer_class = OfferInfoSerializer
     queryset = SellItems.objects.all()
     lookup_field = "id"
+
+
+class OfferCategoryView(generics.ListAPIView):
+    serializer_class = OffersSerializer
+    pagination_class = OffersPagination
+
+    def get_queryset(self):
+        category = self.kwargs["category"]
+        field_lookup = {f"{category}": True}
+        return SellItems.objects.filter(**field_lookup)

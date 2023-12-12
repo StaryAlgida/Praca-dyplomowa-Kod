@@ -17,11 +17,11 @@ export default function Section() {
   }, [page]);
 
   return (
-    <section className="flex justify-center flex-col">
-      <div className="bg-white my-10 rounded-xl">
+    <>
+      <div className="bg-white my-10  flex justify-center flex-col">
         <MainOffer title={"Sellers Offers"} />
       </div>
-      <PaginationComponent />
-    </section>
+      <PaginationComponent category={""} />
+    </>
   );
 }

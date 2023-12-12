@@ -5,7 +5,11 @@ import NextButton from "./NextButton";
 import PreviousButton from "./PreviousButton";
 import { useParams } from "react-router-dom";
 
-export default function PaginationComponent() {
+export default function PaginationComponent({
+  category = "",
+}: {
+  category: string;
+}) {
   const { items, pages } = useContext(OffersContext);
   const { page } = useParams();
 
@@ -44,16 +48,20 @@ export default function PaginationComponent() {
             className="isolate inline-flex -space-x-px rounded-md shadow-sm"
             aria-label="Pagination"
           >
-            <PreviousButton />
+            <PreviousButton category={category} />
             {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
             {/* <Button pagenum={1} />
             <Button pagenum={2} /> */}
 
             {Array.from({ length: pages }, (_, index) => (
-              <Button key={`pag${index + 1}`} pagenum={index + 1} />
+              <Button
+                key={`pag${index + 1}`}
+                pagenum={index + 1}
+                category={category}
+              />
             ))}
 
-            <NextButton />
+            <NextButton category={category} />
           </nav>
         </div>
       </div>

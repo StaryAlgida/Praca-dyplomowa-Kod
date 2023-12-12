@@ -14,6 +14,7 @@ interface OffersContextData {
   getOffers: (page: string | undefined) => void;
   getOffer: (id: string | undefined) => void;
   sellOffer: (id: string, e: React.FormEvent<HTMLFormElement>) => void;
+  offersCategory: (category: string, page: string) => void;
 }
 
 const OffersContext = createContext<OffersContextData>({
@@ -58,6 +59,7 @@ const OffersContext = createContext<OffersContextData>({
   getOffers: async () => {},
   getOffer: async () => {},
   sellOffer: async () => {},
+  offersCategory: async () => {},
 });
 
 export default OffersContext;
@@ -167,6 +169,23 @@ export const OffersProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const offersCategory = async (category: string, page: string) => {
+    try {
+      const response = await client.get(`/offer/${category}?p=${page}`);
+      if (response.status === 200) {
+        setItems({ ...response.data });
+        setPages(Math.ceil(response.data.count / 12));
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 404 || err.response?.status === 500) {
+          nav("/error/404");
+        }
+        console.log(err);
+      }
+    }
+  };
+
   const contextData = {
     items,
     item,
@@ -174,6 +193,7 @@ export const OffersProvider = ({ children }: { children: ReactNode }) => {
     getOffers,
     getOffer,
     sellOffer,
+    offersCategory,
   };
 
   return (

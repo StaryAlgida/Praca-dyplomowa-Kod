@@ -98,7 +98,7 @@ export default function Header() {
               {navigation.map((item) => (
                 <Disclosure.Button
                   key={item.name}
-                  as="link"
+                  as="a"
                   href={item.href}
                   className={classNames(
                     item.current
@@ -125,32 +125,32 @@ function Products() {
       name: "Electronics",
       description:
         "Televisions, cell phones, laptops, tablets, cameras, game consoles and more",
-      href: "/2",
+      href: "/electronics/1",
       icon: TvIcon,
     },
     {
       name: "Fashion",
       description: "Clothes, shoes, jewelry, watches and accessories",
-      href: "#",
+      href: "/fashion/1",
       icon: TagIcon,
     },
     {
       name: "Home and garden",
       description: "Furniture, tools, lighting, household items and more",
-      href: "#",
+      href: "/home_garden/1",
       icon: HomeIcon,
     },
     {
       name: "Automotive",
       description:
         "Passenger and commercial vehicles, motorcycles, car parts and accessories",
-      href: "#",
+      href: "/automotive/1",
       icon: Cog6ToothIcon,
     },
     {
       name: "Health and beauty",
       description: "Cosmetics, dietary supplements, medical equipment and more",
-      href: "#",
+      href: "/health_beauty/1",
       icon: SwatchIcon,
     },
   ];
@@ -188,13 +188,13 @@ function Products() {
                   />
                 </div>
                 <div className="flex-auto">
-                  <a
-                    href={item.href}
+                  <Link
+                    to={item.href}
                     className="block font-semibold text-gray-900"
                   >
                     {item.name}
                     <span className="absolute inset-0" />
-                  </a>
+                  </Link>
                   <p className="mt-1 text-gray-600">{item.description}</p>
                 </div>
               </div>

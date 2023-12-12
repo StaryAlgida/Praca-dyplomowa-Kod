@@ -1,6 +1,12 @@
 import { Link, useParams } from "react-router-dom";
 
-export default function Button({ pagenum }: { pagenum: number }) {
+export default function Button({
+  pagenum,
+  category = "",
+}: {
+  pagenum: number;
+  category: string;
+}) {
   const def =
     "relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex";
   const clicked =
@@ -9,7 +15,7 @@ export default function Button({ pagenum }: { pagenum: number }) {
 
   return (
     <Link
-      to={`/${pagenum}`}
+      to={`${category}/${pagenum}`}
       aria-current="page"
       className={page ? (parseInt(page) === pagenum ? clicked : def) : ""}
     >
