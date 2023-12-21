@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (response.status == 200) {
         setError({ login: "", register: "", regId: [] });
-        localStorage.setItem("authTokens", JSON.stringify(data));
+        localStorage.setItem("authTokens", JSON.stringify(data)); //<------- zapisany token
         setAuthTokens(data);
         setUser(jwtDecode(data.access));
         navigate("/profile");

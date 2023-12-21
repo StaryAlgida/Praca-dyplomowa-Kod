@@ -53,6 +53,40 @@ class SellItems(models.Model):
         default="defaults/default_product.png",
     )
     description = models.TextField(max_length=1000)
-
+    is_deleted = models.BooleanField(default=False)
     # def save(self, *args, **kwargs):
     #     super().save(*args, **kwargs)
+
+
+class Address(models.Model):
+    COUNTRY_CHOICES = [("PL", "Poland"), ("EN", "England"), ("USA", "USA")]
+
+    first_name = models.CharField(max_length=30, null=False, blank=False)
+    last_name = models.CharField(max_length=30, null=False, blank=False)
+
+    phone_number = models.CharField(max_length=30, null=False, blank=False)
+
+    country = models.CharField(
+        max_length=40, choices=COUNTRY_CHOICES, null=False, blank=False
+    )
+
+    street_address = models.CharField(max_length=50, null=False, blank=False)
+    city = models.CharField(max_length=30, null=False, blank=False)
+    region = models.CharField(max_length=30, null=False, blank=False)
+    zip_code = models.CharField(max_length=10, null=False, blank=False)
+    house_premises_num = models.CharField(max_length=10, null=False, blank=False)
+
+
+class BuySellItemHistory(models.Model):
+    seller_id = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="seller_history"
+    )
+    buyer_id = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="buyer_history"
+    )
+    shipping_id = models.ForeignKey(Address, on_delete=models.CASCADE)
+    item_id = models.ForeignKey(SellItems, on_delete=models.CASCADE)
+
+    price = models.FloatField(null=False, blank=False)
+    quantity = models.IntegerField(null=False, blank=False)
+    date = models.DateTimeField(auto_now_add=True)

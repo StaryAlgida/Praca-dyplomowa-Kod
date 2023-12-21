@@ -10,7 +10,7 @@ function classNames(...classes: string[]) {
 }
 
 export default function Offer() {
-  const { item, getOffer, sellOffer } = useContext(OffersContext);
+  const { item, getOffer, buyOffer } = useContext(OffersContext);
   const { id } = useParams();
 
   const [amount, setAmount] = useState("");
@@ -72,7 +72,7 @@ export default function Offer() {
             </div>
 
             <form
-              onSubmit={(e) => sellOffer(id ? id : "", e)}
+              onSubmit={(e) => buyOffer(id ? id : "", item.price, e)}
               className="mt-10"
             >
               {/* Colors */}
@@ -82,38 +82,84 @@ export default function Offer() {
                 </h3>
 
                 <p>
-                  <input
-                    className="border-2 border-sky-500 rounded-xl px-3 w-32"
-                    max={item.quantity}
-                    min={1}
-                    value={amount}
-                    onChange={(e) => {
-                      setAmount(e.target.value);
-                    }}
-                    placeholder="0"
-                    required
-                    type="number"
-                  />{" "}
+                  {item.quantity === 0 ? (
+                    <input
+                      className="border-2 border-sky-500 rounded-xl px-3 w-32"
+                      max={item.quantity}
+                      min={1}
+                      value={0}
+                      onChange={(e) => {
+                        setAmount(e.target.value);
+                      }}
+                      placeholder="0"
+                      disabled
+                      type="number"
+                      name="amount"
+                    />
+                  ) : (
+                    <input
+                      className="border-2 border-sky-500 rounded-xl px-3 w-32"
+                      max={item.quantity}
+                      min={1}
+                      value={amount}
+                      onChange={(e) => {
+                        setAmount(e.target.value);
+                      }}
+                      placeholder="0"
+                      required
+                      type="number"
+                      name="amount"
+                    />
+                  )}{" "}
                   / {item.quantity}
                 </p>
               </div>
 
               {/* Sizes */}
               <div className="mt-10">
-                <h2>Summary</h2>
-                <p>Amount: {amount === "" ? 0 : amount}</p>
-                <p>Price for one piece: {item.price} PLN</p>
-                <h3 className="font-bold text-xl">
-                  Totla price: {Number(item.price) * Number(amount)} PLN
-                </h3>
+                <table className="table-auto">
+                  <thead>
+                    <tr>
+                      <th>
+                        <h2>Summary</h2>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Amount: </td>
+                      <td className="pl-4">{amount === "" ? 0 : amount}</td>
+                    </tr>
+                    <tr>
+                      <td>Price for one piece: </td>
+                      <td className="pl-4">{item.price} PLN</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <h3 className="font-bold text-xl">Totla price:</h3>
+                      </td>
+                      <td className="pl-4">
+                        {Number(item.price) * Number(amount)} PLN
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-
-              <button
-                type="submit"
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Buy
-              </button>
+              {item.quantity === 0 ? (
+                <button
+                  disabled
+                  className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-400 px-8 py-3 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Sold out
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Buy
+                </button>
+              )}
             </form>
           </div>
         </div>
@@ -132,28 +178,6 @@ export default function Offer() {
                 <p className="text-base text-gray-900">{item.description}</p>
               </div>
             </div>
-
-            {/* <div className="mt-10">
-              <h3 className="text-sm font-medium text-gray-900">Highlights</h3>
-
-              <div className="mt-4">
-                <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                  {product.highlights.map((highlight) => (
-                    <li key={highlight} className="text-gray-400">
-                      <span className="text-gray-600">{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-10">
-              <h2 className="text-sm font-medium text-gray-900">Details</h2>
-
-              <div className="mt-4 space-y-6">
-                <p className="text-sm text-gray-600">{product.details}</p>
-              </div>
-            </div> */}
           </div>
         </div>
       </div>

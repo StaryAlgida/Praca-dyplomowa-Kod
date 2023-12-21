@@ -21,4 +21,10 @@ interface Offers {
   results: Offer[];
 }
 
-export type { Offer, Offers };
+interface BuyItemData {
+  id: string;
+  amount: string;
+  price: string;
+}
+
+export type { Offer, Offers, BuyItemData };

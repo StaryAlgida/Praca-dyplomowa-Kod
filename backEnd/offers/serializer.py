@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from base.models import SellItems
+from base.models import Address, BuySellItemHistory, SellItems
 
 
 class OffersSerializer(serializers.ModelSerializer):
@@ -45,3 +45,27 @@ class OfferInfoSerializer(serializers.ModelSerializer):
             "picture",
             "description",
         ]
+
+
+class ItemSellInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SellItems
+        fields = ["id", "user", "price", "quantity"]
+
+
+class UpdateItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SellItems
+        fields = ["quantity"]
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = "__all__"
+
+
+class HistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BuySellItemHistory
+        fields = "__all__"
