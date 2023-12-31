@@ -2,51 +2,19 @@ import React, { createContext, ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import {
+  Errors,
+  JwtPayload,
+  LoggedUserInfo,
+  PrivateInfo,
+  UserProfileContextData,
+  History,
+} from "../interfaces/UserProfileInterfaces";
 // import { jwtDecode } from "jwt-decode";
 
 const client = axios.create({
   baseURL: "http://127.0.0.1:8000",
 });
-
-interface Errors {
-  error: string;
-  id: number[];
-}
-
-interface JwtPayload {
-  user_id: number;
-  username: string;
-}
-
-interface LoggedUserInfo {
-  company_name: string;
-  first_name: string;
-  last_name: string;
-  contact_email: string;
-  phone_number: string;
-  profile_picture: string;
-}
-
-interface PrivateInfo {
-  email: string;
-  username: string;
-}
-
-interface UserProfileContextData {
-  mainUserInfo: LoggedUserInfo;
-  soldInfo: unknown;
-  boughtInfo: unknown;
-  username: unknown;
-  userPrivateIfno: unknown;
-  error: Errors;
-  getPublicInfoForm: () => void;
-  publickInfoUpdate: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  getPrivateInfo: () => void;
-  updatePrivateInfo: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  changePassword: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  getPublicInfo: () => void;
-  resetError: () => void;
-}
 
 const UserProfileContext = createContext<UserProfileContextData>({
   mainUserInfo: {
@@ -62,6 +30,38 @@ const UserProfileContext = createContext<UserProfileContextData>({
   username: null,
   userPrivateIfno: null,
   error: { error: "", id: [] },
+  sellHistory: {
+    count: 0,
+    next: "",
+    previous: "",
+    results: [
+      {
+        title: "",
+        price: "",
+        quantity: "",
+        date: "",
+        shipping_id: "",
+        buyer_id: "",
+        item_id: "",
+      },
+    ],
+  },
+  buyHistory: {
+    count: 0,
+    next: "",
+    previous: "",
+    results: [
+      {
+        title: "",
+        price: "",
+        quantity: "",
+        date: "",
+        shipping_id: "",
+        seller_id: "",
+        item_id: "",
+      },
+    ],
+  },
   getPublicInfoForm: () => {},
   publickInfoUpdate: async () => {},
   updatePrivateInfo: async () => {},
@@ -69,6 +69,8 @@ const UserProfileContext = createContext<UserProfileContextData>({
   changePassword: async () => {},
   getPublicInfo: () => {},
   resetError: () => {},
+  getSellHistory: () => {},
+  getBuyHistory: () => {},
 });
 // e: React.FormEvent<HTMLFormElement>
 function getUser() {
@@ -91,6 +93,8 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     update_info: "profile/update/info",
     update_login: "profile/update/login",
     update_password: "profile/update/password",
+    sell_history: "profile/history/sell",
+    buy_history: "profile/history/buy",
   };
 
   const navigate = useNavigate();
@@ -109,6 +113,40 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
   const [userPrivateIfno, setUserPrivateIfno] = useState<PrivateInfo>({
     email: "",
     username: "",
+  });
+
+  const [sellHistory, setSellHistory] = useState<History>({
+    count: 0,
+    next: "",
+    previous: "",
+    results: [
+      {
+        title: "",
+        price: "",
+        quantity: "",
+        date: "",
+        shipping_id: "",
+        seller_id: "",
+        item_id: "",
+      },
+    ],
+  });
+
+  const [buyHistory, setBuyHistory] = useState<History>({
+    count: 0,
+    next: "",
+    previous: "",
+    results: [
+      {
+        title: "",
+        price: "",
+        quantity: "",
+        date: "",
+        shipping_id: "",
+        seller_id: "",
+        item_id: "",
+      },
+    ],
   });
 
   const publickInfoUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -158,8 +196,6 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
           Authorization: `Bearer ${authTokens.access}`,
         },
       });
-      console.log(response);
-
       if (response.status === 200) {
         setMainUserInfo(response.data);
       }
@@ -298,6 +334,40 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const getSellHistory = async () => {
+    try {
+      const response = await client.get(Links.sell_history, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+      setSellHistory({ ...response.data });
+      console.log("sell_history: ", response);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.log(err);
+      }
+    }
+  };
+
+  const getBuyHistory = async () => {
+    try {
+      const response = await client.get(Links.buy_history, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+      setBuyHistory({ ...response.data });
+      console.log("buy_history: ", response);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.log(err);
+      }
+    }
+  };
+
   const resetError = () => {
     setError({ error: "", id: [] });
   };
@@ -309,6 +379,8 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     soldInfo: null,
     boughtInfo: null,
     error: error,
+    sellHistory,
+    buyHistory,
     publickInfoUpdate,
     getPublicInfo,
     getPublicInfoForm,
@@ -316,6 +388,8 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     updatePrivateInfo,
     changePassword,
     resetError,
+    getSellHistory,
+    getBuyHistory,
   };
 
   return (

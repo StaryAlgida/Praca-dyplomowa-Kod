@@ -12,11 +12,14 @@ from rest_framework import (
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
+from .pagination import HistoryPagination
 
-from base.models import User
+from base.models import BuySellItemHistory, User
 from base.validations import check_if_empty, is_not_empty, validate_password
 
 from .serializer import (
+    BuyHistorySerializer,
+    SellHistorySerializer,
     UpdatePublicUserSerializer,
     UpdatePrivateInfoSerializer,
     ChangePasswordSerializer,
@@ -133,3 +136,27 @@ class ChangePasswordView(
             return Response({"response": "Password updated."}, status=200)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SellHistory(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = SellHistorySerializer
+    pagination_class = HistoryPagination
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        print(user_id)
+        queryset = BuySellItemHistory.objects.filter(seller_id=user_id)
+        return queryset
+
+
+class BuyHistory(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = BuyHistorySerializer
+    pagination_class = HistoryPagination
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        print(user_id)
+        queryset = BuySellItemHistory.objects.filter(buyer_id=user_id)
+        return queryset

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from base.models import User
+from base.models import BuySellItemHistory, User
 
 
 class LogedUserProfileInfoSerializer(serializers.ModelSerializer):
@@ -74,3 +74,35 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
                 {"error": "The old and new password are the same.", "id": [0, 1, 2]}
             )
         return value1
+
+
+class SellHistorySerializer(serializers.ModelSerializer):
+    title = serializers.CharField(source="item_id.title")
+
+    class Meta:
+        model = BuySellItemHistory
+        fields = [
+            "title",
+            "price",
+            "quantity",
+            "date",
+            "shipping_id",
+            "buyer_id",
+            "item_id",
+        ]
+
+
+class BuyHistorySerializer(serializers.ModelSerializer):
+    title = serializers.CharField(source="item_id.title")
+
+    class Meta:
+        model = BuySellItemHistory
+        fields = [
+            "title",
+            "price",
+            "quantity",
+            "date",
+            "shipping_id",
+            "seller_id",
+            "item_id",
+        ]

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BuyItemData, Offer, Offers } from "../offerts/OffersInterface";
+import { BuyItemData, Offer, Offers } from "../interfaces/OffersInterface";
 import { ReactNode, createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Offer } from "./OffersInterface";
+import { Offer } from "../interfaces/OffersInterface";
 import { v1 as uuidv1 } from "uuid";
 import Tags from "./Tags";
 import { Link } from "react-router-dom";
