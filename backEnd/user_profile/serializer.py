@@ -78,6 +78,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 
 class SellHistorySerializer(serializers.ModelSerializer):
     title = serializers.CharField(source="item_id.title")
+    buyer_name = serializers.CharField(source="buyer_id.username")
 
     class Meta:
         model = BuySellItemHistory
@@ -88,12 +89,14 @@ class SellHistorySerializer(serializers.ModelSerializer):
             "date",
             "shipping_id",
             "buyer_id",
+            "buyer_name",
             "item_id",
         ]
 
 
 class BuyHistorySerializer(serializers.ModelSerializer):
     title = serializers.CharField(source="item_id.title")
+    seller_name = serializers.CharField(source="seller_id.username")
 
     class Meta:
         model = BuySellItemHistory
@@ -104,5 +107,6 @@ class BuyHistorySerializer(serializers.ModelSerializer):
             "date",
             "shipping_id",
             "seller_id",
+            "seller_name",
             "item_id",
         ]

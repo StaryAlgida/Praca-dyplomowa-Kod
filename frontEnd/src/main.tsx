@@ -28,6 +28,8 @@ import Offer from "./offerts/Offer.tsx";
 import Category from "./components/category/Category.tsx";
 import ShippingFomr from "./components/Shipping/ShippingForm.tsx";
 import React from "react";
+import { ProfileContextProvider } from "./context/ProfileContext.tsx";
+import Profile from "./components/Profile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -134,6 +136,14 @@ const router = createBrowserRouter([
           { path: "/settings/privateinfo", element: <PrivateInfo /> },
           { path: "/settings/changepassword", element: <ChangePassword /> },
         ],
+      },
+      {
+        path: "/profile/:username",
+        element: (
+          <ProfileContextProvider>
+            <Profile />
+          </ProfileContextProvider>
+        ),
       },
     ],
   },

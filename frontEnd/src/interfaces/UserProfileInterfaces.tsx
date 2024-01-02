@@ -24,29 +24,31 @@ interface PrivateInfo {
 
 interface SellHistory {
   title: string;
-  price: string;
-  quantity: string;
+  price: number;
+  quantity: number;
   date: string;
-  shipping_id: string;
-  buyer_id: string;
-  item_id: string;
+  shipping_id: number;
+  buyer_id: number;
+  buyer_name: string;
+  item_id: number;
 }
 
 interface BuyHistory {
   title: string;
-  price: string;
-  quantity: string;
+  price: number;
+  quantity: number;
   date: string;
-  shipping_id: string;
-  seller_id: string;
-  item_id: string;
+  shipping_id: number;
+  seller_id: number;
+  seller_name: string;
+  item_id: number;
 }
 
 interface UserProfileContextData {
   mainUserInfo: LoggedUserInfo;
   soldInfo: unknown;
   boughtInfo: unknown;
-  username: unknown;
+  username: string;
   userPrivateIfno: unknown;
   error: Errors;
   sellHistory: History;

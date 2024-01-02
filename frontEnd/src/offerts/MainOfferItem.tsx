@@ -48,23 +48,26 @@ export default function MainOfferItem({ product }: { product: Offer }) {
             return <Tags key={item[2]} item={item} />;
           })}
         </div>
-
-        <img
-          src={product.picture}
-          alt={"prod.imageAlt"}
-          className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-        />
+        <Link to={`/offer/${product.id}`}>
+          <img
+            src={product.picture}
+            alt={"prod.imageAlt"}
+            className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+          />
+        </Link>
       </div>
       <div className="mt-4 flex justify-between">
         <div>
-          <h3 className="text-sm text-gray-700">
+          <h3 className="text-sm text-gray-700 hover:text-amber-600 hover:font-semibold transition ease-in-out">
             <Link to={`/offer/${product.id}`}>
-              <span aria-hidden="true" className="absolute inset-0" />
+              {/* <span aria-hidden="true" className="absolute inset-0 z-0" /> */}
               {product.title}
             </Link>
           </h3>
-          <p className="mt-1 text-sm text-gray-500">
-            {product.company_name ? product.company_name : product.username}
+          <p className="mt-1 text-sm text-gray-500 hover:text-amber-600 hover:font-semibold transition ease-in-out">
+            <Link to={`/profile/${product.username}`}>
+              {product.company_name ? product.company_name : product.username}
+            </Link>
           </p>
         </div>
         <div className="flex flex-col items-center">

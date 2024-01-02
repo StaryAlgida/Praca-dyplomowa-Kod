@@ -27,7 +27,7 @@ const UserProfileContext = createContext<UserProfileContextData>({
   },
   soldInfo: null,
   boughtInfo: null,
-  username: null,
+  username: "",
   userPrivateIfno: null,
   error: { error: "", id: [] },
   sellHistory: {
@@ -37,12 +37,13 @@ const UserProfileContext = createContext<UserProfileContextData>({
     results: [
       {
         title: "",
-        price: "",
-        quantity: "",
+        price: 0,
+        quantity: 0,
         date: "",
-        shipping_id: "",
-        buyer_id: "",
-        item_id: "",
+        shipping_id: 0,
+        buyer_id: 0,
+        buyer_name: "",
+        item_id: 0,
       },
     ],
   },
@@ -53,12 +54,13 @@ const UserProfileContext = createContext<UserProfileContextData>({
     results: [
       {
         title: "",
-        price: "",
-        quantity: "",
+        price: 0,
+        quantity: 0,
         date: "",
-        shipping_id: "",
-        seller_id: "",
-        item_id: "",
+        shipping_id: 0,
+        seller_id: 0,
+        seller_name: "",
+        item_id: 0,
       },
     ],
   },
@@ -82,7 +84,7 @@ function getUser() {
       return decodedUser?.username;
     }
   }
-  return null;
+  return "";
 }
 
 export default UserProfileContext;
@@ -122,12 +124,13 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     results: [
       {
         title: "",
-        price: "",
-        quantity: "",
+        price: 0,
+        quantity: 0,
         date: "",
-        shipping_id: "",
-        seller_id: "",
-        item_id: "",
+        shipping_id: 0,
+        buyer_id: 0,
+        buyer_name: "",
+        item_id: 0,
       },
     ],
   });
@@ -139,12 +142,13 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     results: [
       {
         title: "",
-        price: "",
-        quantity: "",
+        price: 0,
+        quantity: 0,
         date: "",
-        shipping_id: "",
-        seller_id: "",
-        item_id: "",
+        shipping_id: 0,
+        seller_id: 0,
+        seller_name: "",
+        item_id: 0,
       },
     ],
   });
