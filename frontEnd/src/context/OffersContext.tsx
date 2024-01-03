@@ -11,7 +11,7 @@ interface OffersContextData {
   items: Offers;
   item: Offer;
   pages: number;
-  itemData: BuyItemData;
+  itemData: BuyItemData | null;
   getOffers: (page: string | undefined) => void;
   getOffer: (id: string | undefined) => void;
   buyOffer: (
@@ -211,6 +211,8 @@ export const OffersProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await client.get(`/offer/${category}?p=${page}`);
       if (response.status === 200) {
+        console.log(response);
+
         setItems({ ...response.data });
         setPages(Math.ceil(response.data.count / 12));
       }

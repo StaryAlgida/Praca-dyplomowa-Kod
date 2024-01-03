@@ -1,16 +1,21 @@
 import Button from "./Button";
-import { useContext } from "react";
-import OffersContext from "../../context/OffersContext";
 import NextButton from "./NextButton";
 import PreviousButton from "./PreviousButton";
 import { useParams } from "react-router-dom";
+import { Offers } from "../../interfaces/OffersInterface";
+
+interface PaginationProp {
+  category: string;
+  items: Offers;
+  pages: number;
+}
 
 export default function PaginationComponent({
-  category = "",
-}: {
-  category: string;
-}) {
-  const { items, pages } = useContext(OffersContext);
+  category,
+  items,
+  pages,
+}: PaginationProp): JSX.Element {
+  // const { items, pages } = useContext(OffersContext);
   const { page } = useParams();
 
   return (
@@ -61,7 +66,7 @@ export default function PaginationComponent({
               />
             ))}
 
-            <NextButton category={category} />
+            <NextButton category={category} pages={pages} />
           </nav>
         </div>
       </div>

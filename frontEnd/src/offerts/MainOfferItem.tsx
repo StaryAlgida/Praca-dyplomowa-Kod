@@ -65,7 +65,7 @@ export default function MainOfferItem({ product }: { product: Offer }) {
             </Link>
           </h3>
           <p className="mt-1 text-sm text-gray-500 hover:text-amber-600 hover:font-semibold transition ease-in-out">
-            <Link to={`/profile/${product.username}`}>
+            <Link to={`/profile/${product.username}/1`}>
               {product.company_name ? product.company_name : product.username}
             </Link>
           </p>

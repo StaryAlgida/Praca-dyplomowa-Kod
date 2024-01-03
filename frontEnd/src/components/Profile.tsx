@@ -2,14 +2,25 @@ import { useContext, useEffect } from "react";
 import ProfileContext from "../context/ProfileContext";
 import PhoneSVG from "./svg/PhoneSVG";
 import { useParams } from "react-router-dom";
+import MainOffer from "../offerts/MainOffer";
+import PaginationComponent from "./pagination/PaginationComponent";
 
 export default function Profile() {
-  const { getPublicInfo, userData } = useContext(ProfileContext);
-  const { username } = useParams();
+  const { getPublicInfo, userData, items, pages, getUserOffers } =
+    useContext(ProfileContext);
+  const { username, page } = useParams();
 
   useEffect(() => {
-    if (username) getPublicInfo(username);
+    if (username) {
+      getPublicInfo(username);
+    }
   }, []);
+
+  useEffect(() => {
+    if (username && page) {
+      getUserOffers(username, page);
+    }
+  }, [username, page]);
 
   return (
     <div className="container mx-auto">
@@ -25,6 +36,7 @@ export default function Profile() {
               ? userData.username
               : `${userData.first_name} ${userData.last_name}`}
           </h1>
+          {userData.company_name}
           {userData.contact_email || userData.phone_number ? (
             <h2 className="font-bold">Contanct</h2>
           ) : (
@@ -41,6 +53,19 @@ export default function Profile() {
           )}
         </div>
       </div>
+      <div className="bg-white my-10  flex justify-center flex-col">
+        <MainOffer
+          title={
+            userData.company_name ? userData.company_name : userData.username
+          }
+          items={items}
+        />
+      </div>
+      <PaginationComponent
+        category={`/profile/${username}`}
+        items={items}
+        pages={pages}
+      />
     </div>
   );
 }

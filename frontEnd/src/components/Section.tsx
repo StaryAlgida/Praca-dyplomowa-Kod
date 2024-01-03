@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import PaginationComponent from "./pagination/PaginationComponent";
 
 export default function Section() {
-  const { getOffers } = useContext(OffersContext);
+  const { getOffers, items, pages } = useContext(OffersContext);
 
   const { page } = useParams();
 
@@ -19,9 +19,9 @@ export default function Section() {
   return (
     <>
       <div className="bg-white my-10  flex justify-center flex-col">
-        <MainOffer title={"Sellers Offers"} />
+        <MainOffer title={"Sellers Offers"} items={items} />
       </div>
-      <PaginationComponent category={""} />
+      <PaginationComponent category={""} items={items} pages={pages} />
     </>
   );
 }

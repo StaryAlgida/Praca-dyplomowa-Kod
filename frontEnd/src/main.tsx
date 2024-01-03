@@ -138,7 +138,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/profile/:username",
+        path: "/profile/:username/:page",
         element: (
           <ProfileContextProvider>
             <Profile />

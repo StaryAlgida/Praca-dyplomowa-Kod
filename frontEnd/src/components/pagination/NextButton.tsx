@@ -1,11 +1,16 @@
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import { useContext } from "react";
 import { Link, useParams } from "react-router-dom";
-import OffersContext from "../../context/OffersContext";
 
-export default function NextButton({ category = "" }: { category: string }) {
+interface NextButtonProps {
+  category: string;
+  pages: number;
+}
+
+export default function NextButton({
+  category,
+  pages,
+}: NextButtonProps): JSX.Element {
   const { page } = useParams();
-  const { pages } = useContext(OffersContext);
   return (
     <Link
       to={

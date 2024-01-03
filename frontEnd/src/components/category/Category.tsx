@@ -6,7 +6,7 @@ import OffersContext from "../../context/OffersContext";
 
 export default function Category() {
   const { category, page } = useParams();
-  const { offersCategory } = useContext(OffersContext);
+  const { offersCategory, items, pages } = useContext(OffersContext);
 
   useEffect(() => {
     if (category && page) offersCategory(category, page);
@@ -15,9 +15,13 @@ export default function Category() {
   return (
     <>
       <div className="bg-white my-10  flex justify-center flex-col">
-        <MainOffer title={category ? category : ""} />
+        <MainOffer title={category ? category : ""} items={items} />
       </div>
-      <PaginationComponent category={category ? `/${category}` : ""} />
+      <PaginationComponent
+        category={category ? `/${category}` : ""}
+        items={items}
+        pages={pages}
+      />
     </>
   );
 }
