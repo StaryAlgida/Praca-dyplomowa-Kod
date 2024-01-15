@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import PaginationComponent from "../pagination/PaginationComponent";
-import MainOffer from "../../offerts/MainOffer";
+import MainOffer from "../offerts/MainOffer";
 import { useContext, useEffect } from "react";
 import OffersContext from "../../context/OffersContext";
 

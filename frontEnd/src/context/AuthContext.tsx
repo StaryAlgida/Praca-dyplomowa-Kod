@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
 const client = axios.create({
   baseURL: "http://127.0.0.1:8000",
@@ -20,6 +21,7 @@ interface AuthContextData {
   loginUser: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   registerUser: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   logoutUser: () => void;
+  toastifyOk: (message: string) => void;
 }
 
 const AuthContext = createContext<AuthContextData>({
@@ -29,6 +31,7 @@ const AuthContext = createContext<AuthContextData>({
   loginUser: async () => {},
   registerUser: async () => {},
   logoutUser: () => {},
+  toastifyOk: () => {},
 });
 
 export default AuthContext;
@@ -64,6 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       const response = await client.post("/api/token/", { email, password });
       const data = await response.data;
+      console.log(data);
 
       if (response.status == 200) {
         setError({ login: "", register: "", regId: [] });
@@ -71,6 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setAuthTokens(data);
         setUser(jwtDecode(data.access));
         navigate("/profile");
+        toastifyOk("Logged");
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -152,6 +157,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const toastifyOk = (message: string) =>
+    toast(message, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
   useEffect(() => {
     const REFRESH_INTERVAL = 1000 * 60 * 4; // 4 minutes
     const interval = setInterval(() => {
@@ -168,6 +185,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loginUser: loginUser,
     logoutUser: logoutUser,
     registerUser: registerUser,
+    toastifyOk,
     error: error,
   };
 

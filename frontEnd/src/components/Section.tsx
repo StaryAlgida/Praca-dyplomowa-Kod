@@ -2,7 +2,7 @@
 // import Register from "./Register";
 
 import { useContext, useEffect } from "react";
-import MainOffer from "../offerts/MainOffer";
+import MainOffer from "./offerts/MainOffer";
 import OffersContext from "../context/OffersContext";
 import { useParams } from "react-router-dom";
 import PaginationComponent from "./pagination/PaginationComponent";

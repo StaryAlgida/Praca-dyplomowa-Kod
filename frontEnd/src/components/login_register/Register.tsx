@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import AuthContext from "../context/AuthContext";
-import RegisterError from "./errors/RegisterError";
+import AuthContext from "../../context/AuthContext";
+import RegisterError from "../errors/RegisterError";
 
 export default function Register() {
   const { registerUser, error } = useContext(AuthContext);

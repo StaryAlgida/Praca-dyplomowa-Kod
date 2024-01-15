@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import ProfileContext from "../context/ProfileContext";
 import PhoneSVG from "./svg/PhoneSVG";
 import { useParams } from "react-router-dom";
-import MainOffer from "../offerts/MainOffer";
+import MainOffer from "./offerts/MainOffer";
 import PaginationComponent from "./pagination/PaginationComponent";
 
 export default function Profile() {

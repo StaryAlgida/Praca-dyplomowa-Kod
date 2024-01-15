@@ -1,6 +1,6 @@
 import { StarIcon } from "@heroicons/react/20/solid";
 import { useContext, useEffect, useState } from "react";
-import OffersContext from "../context/OffersContext";
+import OffersContext from "../../context/OffersContext";
 import { useParams } from "react-router-dom";
 
 const reviews = { href: "#", average: 4, totalCount: 117 };

@@ -137,6 +137,7 @@ export const OffersProvider = ({ children }: { children: ReactNode }) => {
         }
         if (err.code === "ERR_NETWORK") {
           nav("/error/404n");
+          // console.log(err);
         }
       }
     }
@@ -170,7 +171,9 @@ export const OffersProvider = ({ children }: { children: ReactNode }) => {
       const newAmount = formData.get("amount") as string;
       const data = { id, amount: newAmount, price };
       localStorage.setItem("itemData", JSON.stringify(data));
-      nav(`/shipping`);
+      if (parseInt(newAmount) > 0) {
+        nav(`/shipping`);
+      }
     } else {
       nav("/login");
     }

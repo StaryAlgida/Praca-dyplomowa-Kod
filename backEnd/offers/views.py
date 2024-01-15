@@ -75,10 +75,8 @@ class BuyItemView(generics.GenericAPIView):
         # checks is address data valid
         address_serializer = AddressSerializer(data=address)
         if address_serializer.is_valid():
-            print("zapisany")
             address_serializer.save()
         else:
-            print(address_serializer.errors)
             return Response(address_serializer.errors, status=404)
 
         address_id = address_serializer.instance.id

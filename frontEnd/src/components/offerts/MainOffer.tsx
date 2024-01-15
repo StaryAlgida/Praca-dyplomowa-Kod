@@ -1,5 +1,5 @@
 import MainOfferItem from "./MainOfferItem";
-import { Offers } from "../interfaces/OffersInterface";
+import { Offers } from "../../interfaces/OffersInterface";
 
 interface OfferProps {
   title: string;
@@ -14,9 +14,15 @@ export default function MainOffer({ title, items }: OfferProps): JSX.Element {
       </h2>
 
       <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-        {items.results.map((product) => (
-          <MainOfferItem key={product.id} product={product} />
-        ))}
+        {items.count === 0 ? (
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+            No offers.
+          </h2>
+        ) : (
+          items.results.map((product) => (
+            <MainOfferItem key={product.id} product={product} />
+          ))
+        )}
       </div>
     </div>
   );

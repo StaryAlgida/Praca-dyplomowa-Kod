@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     "base",
     "offers",
     "user_profile",
+    "usersprofiles",
 ]
 
 MIDDLEWARE = [

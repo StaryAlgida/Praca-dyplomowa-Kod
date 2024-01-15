@@ -106,7 +106,7 @@ export default function UserProfile() {
                     </td>
                     <td className="border-b border-slate-700 p-4 pl-8 text-slate-200 hover:text-amber-400 hover:font-semibold transition ease-in-out">
                       {"buyer_name" in e ? (
-                        <Link to={`/profile/${e.buyer_name}`}>
+                        <Link to={`/profile/${e.buyer_name}/1`}>
                           {e.buyer_name}
                         </Link>
                       ) : (
@@ -171,7 +171,7 @@ export default function UserProfile() {
                     </td>
                     <td className="border-b border-slate-700 p-4 pl-8 text-slate-200 hover:text-amber-400 hover:font-semibold transition ease-in-out">
                       {"seller_name" in e ? (
-                        <Link to={`/profile/${e.seller_name}`}>
+                        <Link to={`/profile/${e.seller_name}/1`}>
                           {e.seller_name}
                         </Link>
                       ) : (
